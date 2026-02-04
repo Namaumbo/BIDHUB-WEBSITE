@@ -21,8 +21,10 @@
   },
   "homepage": "https://github.com/Namaumbo/BIDHUB-WEBSITE#readme",
   "dependencies": {
+    "@firecms/neat": "^0.5.1",
     "react": "^19.2.4",
-    "react-dom": "^19.2.4"
+    "react-dom": "^19.2.4",
+    "three": "^0.182.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^5.1.3",

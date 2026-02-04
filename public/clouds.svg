@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="420" viewBox="0 0 1600 420">
+  <defs>
+    <linearGradient id="cloudFill" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#dbeafe" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#e2e8f0" stop-opacity="0.65"/>
+    </linearGradient>
+    <filter id="soft" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2"/>
+    </filter>
+  </defs>
+
+  <!-- light sky tint -->
+  <rect width="1600" height="420" fill="#ffffff"/>
+
+  <!-- clouds row (designed to repeat horizontally) -->
+  <g fill="url(#cloudFill)" filter="url(#soft)" opacity="0.9">
+    <path d="M140 250c-36 0-66-25-66-56 0-27 22-50 51-55 9-32 42-56 81-56 46 0 84 33 86 75 28 6 49 28 49 55 0 31-30 57-67 57H140z"/>
+    <path d="M520 210c-28 0-52-19-52-42 0-20 17-37 40-41 7-24 31-42 60-42 34 0 62 25 63 56 21 4 37 21 37 41 0 23-24 42-53 42H520z"/>
+    <path d="M820 260c-42 0-77-29-77-65 0-31 26-57 59-63 10-37 48-65 93-65 53 0 97 38 99 87 32 7 57 33 57 64 0 36-35 66-78 66H820z"/>
+    <path d="M1230 215c-33 0-60-22-60-49 0-23 20-43 46-47 8-28 36-49 70-49 40 0 73 29 74 66 25 5 44 24 44 47 0 27-27 49-61 49h-113z"/>
+    <!-- repeat overlap -->
+    <path d="M1600 250c-36 0-66-25-66-56 0-27 22-50 51-55 9-32 42-56 81-56 46 0 84 33 86 75 28 6 49 28 49 55 0 31-30 57-67 57h-68z"/>
+  </g>
+
+  <!-- fade out to transparent near bottom -->
+  <rect y="210" width="1600" height="210" fill="#ffffff" opacity="0.75"/>
+</svg>
+
+

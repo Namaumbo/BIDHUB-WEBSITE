@@ -185,9 +185,15 @@
 }
 
 .hero-gavel {
-  width: 92px;
-  height: 92px;
-  color: rgba(15, 23, 42, 0.35);
+  width: 30rem;
+  height: 30rem;
+  /* color: rgba(15, 23, 42, 0.35); */
+}
+
+.hero-medias {
+  width: 30rem;
+  height: 30rem;
+  /* color: rgba(15, 23, 42, 0.35); */
 }
 
 /* Stats strip */
@@ -506,6 +512,33 @@
   text-align: center;
   color: rgba(255, 255, 255, 0.55);
   font-size: 13px;
+}
+
+/* Background gradient wrapper */
+.bg-gradient {
+  position: relative;
+  min-height: 100%;
+}
+
+.bg-gradient::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 420px;
+  background-image: url('/clouds.svg');
+  background-repeat: repeat-x;
+  background-position: top center;
+  background-size: 1600px 420px;
+  opacity: 0.55;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bg-gradient-content {
+  position: relative;
+  z-index: 1;
 }
 
 /* Responsive */

@@ -1,4 +1,6 @@
 import './App.css'
+import Geometry from './componets/Geometry'
+import BackgroundGradient from './componets/Gradient'
 
 function App() {
   const features = [
@@ -147,51 +149,54 @@ function App() {
           </nav>
         </div>
       </header>
-
       <main>
-        <section className="hero" id="home">
-          <div className="container">
-            <div className="hero-grid">
-              <div>
-                <h1 className="hero-title">
-                  Smart Bidding
-                  <br />
-                  Made Simple
-                </h1>
-                <p className="hero-subtitle">
-                  Post items you want bids on and connect with thousands of active bidders. Get
-                  competitive offers and close deals faster than ever.
-                </p>
+        <BackgroundGradient>
+          <section className="hero" id="home">
+            <div className="container">
+              <div className="hero-grid">
+                <div>
+                  <h1 className="hero-title">
+                    Smart Bidding
+                    <br />
+                    Made Simple
+                  </h1>
+                  <p className="hero-subtitle">
+                    Post items you want bids on and connect with thousands of active bidders. Get
+                    competitive offers and close deals faster than ever.
+                  </p>
 
-                <div className="hero-actions">
-                  <a className="btn btn-primary" href="#pricing">
-                    Start Bidding
-                    <span className="btn-icon" aria-hidden="true">
-                      ›
-                    </span>
-                  </a>
-                  <a className="btn btn-outline" href="#features">
-                    Learn More
-                  </a>
+                  <div className="hero-actions">
+                    <a className="btn btn-primary" href="#pricing">
+                      Start Bidding
+                      <span className="btn-icon" aria-hidden="true">
+                        ›
+                      </span>
+                    </a>
+                    <a className="btn btn-outline" href="#features">
+                      Learn More
+                    </a>
+                  </div>
                 </div>
-              </div>
 
-              <div className="hero-media" aria-hidden="true">
-                <div className="hero-media-inner">
-                  {/* <svg className="hero-gavel" viewBox="0 0 64 64">
+
+
+
+                <div aria-hidden="true">
+                  <div className="">
+                    {/* <svg className="hero-gavel" viewBox="0 0 64 64">
                     <path
                       fill="currentColor"
                       d="M40.7 10.3a4 4 0 0 0-5.7 0l-6.2 6.2-2.8-2.8a4 4 0 0 0-5.7 0l-2.9 2.9a4 4 0 0 0 0 5.7l2.8 2.8-9.8 9.8a4 4 0 0 0 0 5.7l3.1 3.1a4 4 0 0 0 5.7 0l9.8-9.8 2.8 2.8a4 4 0 0 0 5.7 0l2.9-2.9a4 4 0 0 0 0-5.7l-2.8-2.8 6.2-6.2a4 4 0 0 0 0-5.7l-3.1-3.1ZM22 26.9l-2.8-2.8 2.9-2.9 2.8 2.8-2.9 2.9Zm-7 14.1-3.1-3.1 10.5-10.5 3.1 3.1L15 41Zm18.9-1.2-2.8-2.8 2.9-2.9 2.8 2.8-2.9 2.9ZM43 18.6 32.5 29.1 29.4 26 39.9 15.5l3.1 3.1Z"
                     />
                   </svg> */}
 
-<video src="https://ouch-prod-src-cdn.icons8.com/vk/videos/e8DFV7jJQkPjJQxr.webm"  autoPlay muted loop className="hero-gavel" />
+                    <video src="https://ouch-prod-src-cdn.icons8.com/vk/videos/e8DFV7jJQkPjJQxr.webm" autoPlay muted loop className="hero-gavel" />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </section>
-
+          </section>
+        </BackgroundGradient>
         <section className="stats" aria-label="BidHub stats">
           <div className="container">
             <div className="stats-grid">
@@ -210,110 +215,113 @@ function App() {
             </div>
           </div>
         </section>
+        <Geometry>
+          <section className="section" id="features">
+            <div className="container">
+              <div className="section-header">
+                <h2>Why Choose BidHub?</h2>
+                <p>
+                  Everything you need to post items and receive competitive bids from a trusted
+                  community
+                </p>
+              </div>
 
-        <section className="section" id="features">
-          <div className="container">
-            <div className="section-header">
-              <h2>Why Choose BidHub?</h2>
+              <div className="cards-grid">
+                {features.map((f) => (
+                  <div className="card" key={f.title}>
+                    <div className="card-icon" aria-hidden="true">
+                      {f.icon}
+                    </div>
+                    <h3 className="card-title">{f.title}</h3>
+                    <p className="card-text">{f.description}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section className="section section-alt" id="how-it-works">
+            <div className="container">
+              <div className="section-header">
+                <h2>How It Works</h2>
+                <p>Get started in 4 simple steps and start receiving bids immediately</p>
+              </div>
+
+              <div className="steps-grid">
+                {howItWorks.map((s, idx) => (
+                  <div className="step-card" key={s.step}>
+                    <div className="step-number">{s.step}</div>
+                    <h3 className="step-title">{s.title}</h3>
+                    <p className="step-text">{s.description}</p>
+                    {idx < howItWorks.length - 1 ? (
+                      <div className="step-arrow" aria-hidden="true">
+                        ›
+                      </div>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section className="section" id="pricing">
+            <div className="container">
+              <div className="section-header">
+                <h2>Simple, Transparent Pricing</h2>
+                <p>Choose the plan that works best for you</p>
+              </div>
+
+              <div className="pricing-grid">
+                {plans.map((p) => (
+                  <div className={`price-card ${p.featured ? 'featured' : ''}`} key={p.name}>
+                    <div className="price-top">
+                      <h3 className="price-name">{p.name}</h3>
+                      <div className="price-value">
+                        {p.price}
+                        <span className="price-per">/mo</span>
+                      </div>
+                      <p className="price-subtitle">{p.subtitle}</p>
+                    </div>
+
+                    <ul className="price-list">
+                      {p.bullets.map((b) => (
+                        <li key={b}>
+                          <span className="check" aria-hidden="true">
+                            ✓
+                          </span>
+                          <span>{b}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <a
+                      className={`btn ${p.featured ? 'btn-primary' : 'btn-outline'} btn-block`}
+                      href="#cta"
+                    >
+                      Get Started
+                    </a>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section className="cta" id="cta">
+            <div className="container">
+              <h2>Ready to Get Better Deals?</h2>
               <p>
-                Everything you need to post items and receive competitive bids from a trusted
-                community
+                Join thousands of users who are posting items and receiving competitive bids every
+                day
               </p>
+              <a className="btn btn-primary" href="#top">
+                Sign Up Free Today
+              </a>
             </div>
-
-            <div className="cards-grid">
-              {features.map((f) => (
-                <div className="card" key={f.title}>
-                  <div className="card-icon" aria-hidden="true">
-                    {f.icon}
-                  </div>
-                  <h3 className="card-title">{f.title}</h3>
-                  <p className="card-text">{f.description}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="section section-alt" id="how-it-works">
-          <div className="container">
-            <div className="section-header">
-              <h2>How It Works</h2>
-              <p>Get started in 4 simple steps and start receiving bids immediately</p>
-            </div>
-
-            <div className="steps-grid">
-              {howItWorks.map((s, idx) => (
-                <div className="step-card" key={s.step}>
-                  <div className="step-number">{s.step}</div>
-                  <h3 className="step-title">{s.title}</h3>
-                  <p className="step-text">{s.description}</p>
-                  {idx < howItWorks.length - 1 ? (
-                    <div className="step-arrow" aria-hidden="true">
-                      ›
-                    </div>
-                  ) : null}
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="section" id="pricing">
-          <div className="container">
-            <div className="section-header">
-              <h2>Simple, Transparent Pricing</h2>
-              <p>Choose the plan that works best for you</p>
-            </div>
-
-            <div className="pricing-grid">
-              {plans.map((p) => (
-                <div className={`price-card ${p.featured ? 'featured' : ''}`} key={p.name}>
-                  <div className="price-top">
-                    <h3 className="price-name">{p.name}</h3>
-                    <div className="price-value">
-                      {p.price}
-                      <span className="price-per">/mo</span>
-                    </div>
-                    <p className="price-subtitle">{p.subtitle}</p>
-                  </div>
-
-                  <ul className="price-list">
-                    {p.bullets.map((b) => (
-                      <li key={b}>
-                        <span className="check" aria-hidden="true">
-                          ✓
-                        </span>
-                        <span>{b}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <a
-                    className={`btn ${p.featured ? 'btn-primary' : 'btn-outline'} btn-block`}
-                    href="#cta"
-                  >
-                    Get Started
-                  </a>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="cta" id="cta">
-          <div className="container">
-            <h2>Ready to Get Better Deals?</h2>
-            <p>
-              Join thousands of users who are posting items and receiving competitive bids every
-              day
-            </p>
-            <a className="btn btn-primary" href="#top">
-              Sign Up Free Today
-            </a>
-          </div>
-        </section>
+          </section>
+        </Geometry>
       </main>
+
+
 
       <footer className="footer">
         <div className="container">
