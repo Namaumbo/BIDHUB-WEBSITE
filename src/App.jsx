@@ -178,12 +178,14 @@ function App() {
 
               <div className="hero-media" aria-hidden="true">
                 <div className="hero-media-inner">
-                  <svg className="hero-gavel" viewBox="0 0 64 64">
+                  {/* <svg className="hero-gavel" viewBox="0 0 64 64">
                     <path
                       fill="currentColor"
                       d="M40.7 10.3a4 4 0 0 0-5.7 0l-6.2 6.2-2.8-2.8a4 4 0 0 0-5.7 0l-2.9 2.9a4 4 0 0 0 0 5.7l2.8 2.8-9.8 9.8a4 4 0 0 0 0 5.7l3.1 3.1a4 4 0 0 0 5.7 0l9.8-9.8 2.8 2.8a4 4 0 0 0 5.7 0l2.9-2.9a4 4 0 0 0 0-5.7l-2.8-2.8 6.2-6.2a4 4 0 0 0 0-5.7l-3.1-3.1ZM22 26.9l-2.8-2.8 2.9-2.9 2.8 2.8-2.9 2.9Zm-7 14.1-3.1-3.1 10.5-10.5 3.1 3.1L15 41Zm18.9-1.2-2.8-2.8 2.9-2.9 2.8 2.8-2.9 2.9ZM43 18.6 32.5 29.1 29.4 26 39.9 15.5l3.1 3.1Z"
                     />
-                  </svg>
+                  </svg> */}
+
+<video src="https://ouch-prod-src-cdn.icons8.com/vk/videos/e8DFV7jJQkPjJQxr.webm"  autoPlay muted loop className="hero-gavel" />
                 </div>
               </div>
             </div>
