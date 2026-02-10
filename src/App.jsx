@@ -5,8 +5,9 @@ import BackgroundGradient from './componets/Gradient'
 function App() {
   const features = [
     {
-      title: 'Post Your Items',
-      description: 'List items you want bids on with detailed descriptions and images',
+      title: 'Post What You Want',
+      description:
+        'Tell sellers what you need (with details and photos if you have them). Your request goes live instantly.',
       icon: (
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
           <path
@@ -17,8 +18,9 @@ function App() {
       ),
     },
     {
-      title: 'Receive Competitive Bids',
-      description: 'Get multiple bids from qualified users competing for your items',
+      title: 'Receive Seller Offers',
+      description:
+        'Sellers compete by sending you bids with price, delivery options, and item condition so you can compare easily.',
       icon: (
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
           <path
@@ -29,8 +31,9 @@ function App() {
       ),
     },
     {
-      title: 'Secure & Transparent',
-      description: 'Every transaction is tracked and verified for maximum security',
+      title: 'Pick the Best Deal',
+      description:
+        'Choose the offer that fits your budget and timeline. You stay in control from the first bid to the final deal.',
       icon: (
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
           <path
@@ -41,8 +44,9 @@ function App() {
       ),
     },
     {
-      title: 'Active Community',
-      description: 'Connect with thousands of bidders and sellers on our platform',
+      title: 'Trusted Seller Network',
+      description:
+        'Browse seller profiles and build confidence with clear communication and a growing community of verified users.',
       icon: (
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
           <path
@@ -54,7 +58,7 @@ function App() {
     },
     {
       title: 'Real-time Updates',
-      description: 'Track bids in real-time and manage your auctions effortlessly',
+      description: 'Get notified as new offers come in and track everything in one place.',
       icon: (
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
           <path
@@ -65,8 +69,8 @@ function App() {
       ),
     },
     {
-      title: 'Better Deals',
-      description: 'Competitive bidding drives better prices for both buyers and sellers',
+      title: 'Better Prices, Faster',
+      description: 'Competition drives better prices for buyers and more sales for sellers — everyone wins.',
       icon: (
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
           <path
@@ -81,23 +85,23 @@ function App() {
   const howItWorks = [
     {
       step: '01',
-      title: 'Sign Up',
-      description: 'Create your free account in seconds and verify your email',
+      title: 'Create Your Account',
+      description: 'Sign up in seconds and start posting requests right away.',
     },
     {
       step: '02',
-      title: 'Post an Item',
-      description: 'Add your item with photos, details, and starting bid amount',
+      title: 'Post What You Want',
+      description: 'Describe the item you want, your budget, and delivery preference (optional photos).',
     },
     {
       step: '03',
-      title: 'Receive Bids',
-      description: 'Watch as bidders compete to win your item in real-time',
+      title: 'Get Seller Bids',
+      description: 'Sellers send competitive offers with price, availability, and delivery details.',
     },
     {
       step: '04',
-      title: 'Close & Transact',
-      description: 'Close the bidding and complete the transaction securely',
+      title: 'Choose & Buy',
+      description: 'Compare offers, chat if needed, then pick the best one and complete the deal.',
     },
   ]
 
@@ -105,21 +109,21 @@ function App() {
     {
       name: 'Starter',
       price: '$0',
-      subtitle: 'Perfect for trying out BidHub',
-      bullets: ['Post up to 3 items/month', 'Basic bidding tools', 'Standard support'],
+      subtitle: 'Perfect for getting started',
+      bullets: ['Post up to 3 requests/month', 'Receive seller bids', 'Standard support'],
     },
     {
       name: 'Professional',
       price: '$19',
-      subtitle: 'For regular buyers and sellers',
+      subtitle: 'For regular buyers & sellers',
       featured: true,
-      bullets: ['Unlimited item listings', 'Real-time analytics', 'Priority support'],
+      bullets: ['Unlimited requests', 'Priority visibility for faster bids', 'Priority support'],
     },
     {
       name: 'Enterprise',
       price: '$49',
       subtitle: 'For teams and high-volume sellers',
-      bullets: ['Team roles & permissions', 'Advanced security', 'Dedicated success manager'],
+      bullets: ['Team roles & permissions', 'Advanced security controls', 'Dedicated success manager'],
     },
   ]
 
@@ -156,24 +160,23 @@ function App() {
               <div className="hero-grid">
                 <div>
                   <h1 className="hero-title">
-                    Smart Bidding
-                    <br />
-                    Made Simple
+                    Request It
+                    <br /> Compare Offers.
                   </h1>
                   <p className="hero-subtitle">
-                    Post items you want bids on and connect with thousands of active bidders. Get
-                    competitive offers and close deals faster than ever.
+                    Tell us what you’re looking for and receive competitive offers from sellers.
+                    Compare price, delivery, and availability — then pick the best deal.
                   </p>
 
                   <div className="hero-actions">
                     <a className="btn btn-primary" href="#pricing">
-                      Start Bidding
+                      Post a Request
                       <span className="btn-icon" aria-hidden="true">
                         ›
                       </span>
                     </a>
                     <a className="btn btn-outline" href="#features">
-                      Learn More
+                      See How It Works
                     </a>
                   </div>
                 </div>
@@ -183,12 +186,7 @@ function App() {
 
                 <div aria-hidden="true">
                   <div className="">
-                    {/* <svg className="hero-gavel" viewBox="0 0 64 64">
-                    <path
-                      fill="currentColor"
-                      d="M40.7 10.3a4 4 0 0 0-5.7 0l-6.2 6.2-2.8-2.8a4 4 0 0 0-5.7 0l-2.9 2.9a4 4 0 0 0 0 5.7l2.8 2.8-9.8 9.8a4 4 0 0 0 0 5.7l3.1 3.1a4 4 0 0 0 5.7 0l9.8-9.8 2.8 2.8a4 4 0 0 0 5.7 0l2.9-2.9a4 4 0 0 0 0-5.7l-2.8-2.8 6.2-6.2a4 4 0 0 0 0-5.7l-3.1-3.1ZM22 26.9l-2.8-2.8 2.9-2.9 2.8 2.8-2.9 2.9Zm-7 14.1-3.1-3.1 10.5-10.5 3.1 3.1L15 41Zm18.9-1.2-2.8-2.8 2.9-2.9 2.8 2.8-2.9 2.9ZM43 18.6 32.5 29.1 29.4 26 39.9 15.5l3.1 3.1Z"
-                    />
-                  </svg> */}
+                    
 
                     <video src="https://ouch-prod-src-cdn.icons8.com/vk/videos/e8DFV7jJQkPjJQxr.webm" autoPlay muted loop className="hero-gavel" />
                   </div>
@@ -202,15 +200,15 @@ function App() {
             <div className="stats-grid">
               <div className="stat">
                 <div className="stat-value">50K+</div>
-                <div className="stat-label">Active Users</div>
+                <div className="stat-label">Active Buyers</div>
               </div>
               <div className="stat">
                 <div className="stat-value">100K+</div>
-                <div className="stat-label">Items Listed</div>
+                <div className="stat-label">Requests Posted</div>
               </div>
               <div className="stat">
                 <div className="stat-value">$5M+</div>
-                <div className="stat-label">Total Bids</div>
+                <div className="stat-label">Offers Made</div>
               </div>
             </div>
           </div>
@@ -221,8 +219,8 @@ function App() {
               <div className="section-header">
                 <h2>Why Choose BidHub?</h2>
                 <p>
-                  Everything you need to post items and receive competitive bids from a trusted
-                  community
+                  Everything you need to post what you want and receive competitive seller bids from a
+                  trusted community.
                 </p>
               </div>
 
@@ -244,7 +242,7 @@ function App() {
             <div className="container">
               <div className="section-header">
                 <h2>How It Works</h2>
-                <p>Get started in 4 simple steps and start receiving bids immediately</p>
+                <p>Post a request, receive offers, and choose the best seller — all in 4 simple steps.</p>
               </div>
 
               <div className="steps-grid">
@@ -310,11 +308,10 @@ function App() {
             <div className="container">
               <h2>Ready to Get Better Deals?</h2>
               <p>
-                Join thousands of users who are posting items and receiving competitive bids every
-                day
+                Post what you want today and let sellers compete to give you the best price and delivery.
               </p>
               <a className="btn btn-primary" href="#top">
-                Sign Up Free Today
+                Post Your First Request
               </a>
             </div>
           </section>
@@ -328,7 +325,7 @@ function App() {
           <div className="footer-grid">
             <div className="footer-brand">
               <div className="footer-logo">BidHub</div>
-              <p>The smart way to buy and sell with competitive bidding.</p>
+              <p>Post what you want and let sellers compete for your business.</p>
             </div>
 
             <div className="footer-col">
