@@ -1,8 +1,32 @@
 import './App.css'
 import Geometry from './componets/Geometry'
 import BackgroundGradient from './componets/Gradient'
+import { useEffect, useMemo, useState } from 'react'
 
 function App() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') setMobileMenuOpen(false)
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [mobileMenuOpen])
+
+  const navLinks = useMemo(
+    () => [
+      { href: '#features', label: 'Features' },
+      { href: '#examples', label: 'Examples' },
+      { href: '#marketplaces', label: 'Marketplaces' },
+      { href: '#popular-requests', label: 'Popular' },
+      { href: '#how-it-works', label: 'How It Works' },
+      { href: '#pricing', label: 'Pricing' },
+    ],
+    [],
+  )
+
   const features = [
     {
       title: 'Post What You Want',
@@ -124,6 +148,128 @@ function App() {
     },
   ]
 
+  const acceptedExamples = [
+    {
+      title: 'Phones & Laptops',
+      description: 'New or used devices, accessories, repairs, and upgrades.',
+      icon: (
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path
+            fill="currentColor"
+            d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm10 2H7v16h10V4Zm-4 15a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
+          />
+        </svg>
+      ),
+    },
+    {
+      title: 'Construction Materials',
+      description: 'Cement, iron sheets, paint, tools, plumbing, electrical supplies.',
+      icon: (
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path
+            fill="currentColor"
+            d="M12 2 2 7v10l10 5 10-5V7L12 2Zm0 2.236L20 8v.764l-8 4-8-4V8l8-3.764ZM4 10.236l7 3.5V20.2l-7-3.5v-6.464Zm16 0V16.7l-7 3.5v-6.464l7-3.5Z"
+          />
+        </svg>
+      ),
+    },
+    {
+      title: 'Groceries & Household',
+      description: 'Bulk groceries, cleaning supplies, home essentials, deliveries.',
+      icon: (
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path
+            fill="currentColor"
+            d="M7 4a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3h2a1 1 0 0 1 1 1v3a6 6 0 0 1-6 6h-4a6 6 0 0 1-6-6V8a1 1 0 0 1 1-1h2V4Zm2 3h6V5H9v2Zm-3 2v2a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V9H6Z"
+          />
+        </svg>
+      ),
+    },
+    {
+      title: 'Services',
+      description: 'Transport, home repairs, tailoring, printing, events, and more.',
+      icon: (
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path
+            fill="currentColor"
+            d="M12 2a4 4 0 0 1 4 4v1h1a3 3 0 0 1 3 3v2a3 3 0 0 1-3 3h-1v1a4 4 0 0 1-8 0v-1H7a3 3 0 0 1-3-3v-2a3 3 0 0 1 3-3h1V6a4 4 0 0 1 4-4Zm2 5V6a2 2 0 0 0-4 0v1h4Zm-4 8v1a2 2 0 0 0 4 0v-1h-4Zm-3-2h10a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1Z"
+          />
+        </svg>
+      ),
+    },
+    {
+      title: 'Vehicles & Parts',
+      description: 'Cars/motorbikes, parts, tyres, batteries, servicing and repairs.',
+      icon: (
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path
+            fill="currentColor"
+            d="M5 11 6.5 6.5A3 3 0 0 1 9.343 4h5.314A3 3 0 0 1 17.5 6.5L19 11v7a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-1H8v1a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-7Zm3.343-5a1 1 0 0 0-.949.684L6.613 9h10.774l-.781-2.316A1 1 0 0 0 15.657 6H8.343ZM7.5 15a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm9 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"
+          />
+        </svg>
+      ),
+    },
+    {
+      title: 'Wholesale & Bulk',
+      description: 'Stock requests for shops: beverages, food, electronics, supplies.',
+      icon: (
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path
+            fill="currentColor"
+            d="M21 7 12 2 3 7v10l9 5 9-5V7Zm-2 1.236V16l-7 3.889V12.5l7-4.264ZM12 4.264 18.764 8 12 11.736 5.236 8 12 4.264ZM5 9.236l7 4.264v7.389L5 16V9.236Z"
+          />
+        </svg>
+      ),
+    },
+  ]
+
+  const popularRequests = [
+    'iPhone 12/13 (used)',
+    'Samsung A-series',
+    'Laptop (Core i5, 8GB RAM)',
+    'Wi‑Fi router',
+    'Cement (50kg)',
+    'Iron sheets',
+    'Solar panel + inverter',
+    'Groceries (bulk)',
+    'Motorbike tyres',
+    'Car battery',
+    'Printer + ink',
+    'Transport / delivery',
+    'Tailoring',
+    'Event chairs & tents',
+  ]
+
+  const popularShowcase = [
+    { title: 'iPhone 13 (used)', meta: 'Lilongwe • Budget: MWK 650k', user: 'TN' },
+    { title: 'Laptop (Core i5, 8GB)', meta: 'Blantyre • Need today', user: 'MS' },
+    { title: 'Cement (50kg x 200)', meta: 'Zomba • Delivery needed', user: 'BK' },
+    { title: 'Solar kit (1.5kW)', meta: 'Mzuzu • Install included', user: 'RJ' },
+    { title: 'Groceries (bulk)', meta: 'Area 25 • Weekly supply', user: 'AM' },
+    { title: 'Motorbike tyres', meta: 'Kasungu • Size 90/90-17', user: 'CP' },
+    { title: 'Transport / delivery', meta: 'City wide • Same day', user: 'LK' },
+    { title: 'Event chairs & tents', meta: 'Weekend • 200 seats', user: 'DM' },
+    { title: 'Printer + ink', meta: 'University • Student rates', user: 'FN' },
+  ]
+
+  const marketplaceCards = [
+    {
+      title: 'All listings in one place',
+      description:
+        'Instead of jumping between WhatsApp and Facebook, BidHub can bring relevant listings into one feed so you can compare faster.',
+    },
+    {
+      title: 'If bids are low, we still help',
+      description:
+        'When you don’t get enough seller offers, we can surface matching listings from connected marketplaces so you still have options.',
+    },
+    {
+      title: 'Market signals for sellers',
+      description:
+        'Sellers can spot what buyers are asking for, connect to people in need, and forecast demand to stock smarter.',
+    },
+  ]
+
   const howItWorks = [
     {
       step: '01',
@@ -179,21 +325,56 @@ function App() {
             </a>
 
             <div className="nav-right">
-              <a className="nav-link" href="#features">
-                Features
-              </a>
-              <a className="nav-link" href="#how-it-works">
-                How It Works
-              </a>
-              <a className="nav-link" href="#pricing">
-                Pricing
-              </a>
+              {navLinks.map((l) => (
+                <a className="nav-link" href={l.href} key={l.href}>
+                  {l.label}
+                </a>
+              ))}
               <a className="btn btn-primary btn-sm" href="#pricing">
                 Get Started
               </a>
             </div>
+
+            <button
+              type="button"
+              className="menu-toggle"
+              aria-label="Open menu"
+              aria-controls="mobile-menu"
+              aria-expanded={mobileMenuOpen ? 'true' : 'false'}
+              onClick={() => setMobileMenuOpen((v) => !v)}
+            >
+              <span className="menu-toggle-bars" aria-hidden="true" />
+            </button>
           </nav>
         </div>
+
+        {mobileMenuOpen ? (
+          <>
+            <button
+              type="button"
+              className="mobile-menu-backdrop"
+              aria-label="Close menu"
+              onClick={() => setMobileMenuOpen(false)}
+            />
+            <div className="mobile-menu" id="mobile-menu" role="dialog" aria-label="Menu">
+              <div className="mobile-menu-links">
+                {navLinks.map((l) => (
+                  <a
+                    className="mobile-menu-link"
+                    href={l.href}
+                    key={l.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {l.label}
+                  </a>
+                ))}
+              </div>
+              <a className="btn btn-primary btn-block" href="#pricing" onClick={() => setMobileMenuOpen(false)}>
+                Get Started
+              </a>
+            </div>
+          </>
+        ) : null}
       </header>
       <main>
         <BackgroundGradient>
@@ -277,6 +458,104 @@ function App() {
                   </div>
                 ))}
               </div>
+            </div>
+          </section>
+
+          <section className="section section-alt" id="examples" aria-label="Examples of what you can post">
+            <div className="container">
+              <div className="section-header">
+                <h2>What You Can Request on BidHub</h2>
+                <p>
+                  Post what you want to buy (or a service you need). Sellers respond with offers you can
+                  compare.
+                </p>
+              </div>
+
+              <div className="cards-grid">
+                {acceptedExamples.map((e) => (
+                  <div className="card" key={e.title}>
+                    <div className="card-icon" aria-hidden="true">
+                      {e.icon}
+                    </div>
+                    <h3 className="card-title">{e.title}</h3>
+                    <p className="card-text">{e.description}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section className="section" id="marketplaces" aria-label="Marketplace aggregation">
+            <div className="container">
+              <div className="section-header">
+                <h2>All Marketplaces, One Place</h2>
+                <p>
+                  We’re building integrations to bring listings from WhatsApp and Facebook into a single
+                  experience — especially helpful when seller bids are not available.
+                </p>
+              </div>
+
+              <div className="cards-grid">
+                {marketplaceCards.map((c) => (
+                  <div className="card" key={c.title}>
+                    <h3 className="card-title">{c.title}</h3>
+                    <p className="card-text">{c.description}</p>
+                  </div>
+                ))}
+              </div>
+
+              <p className="section-note">
+                Integrations depend on what’s permitted by each platform and the groups/pages you connect.
+              </p>
+            </div>
+          </section>
+
+          <section className="section section-alt" id="popular-requests" aria-label="Popular requests">
+            <div className="container">
+              <div className="section-header">
+                <h2>Popular Requests</h2>
+                <p>
+                  Live-style examples of what people post — scroll through and copy the wording to start
+                  fast.
+                </p>
+              </div>
+
+              <div className="marquee" aria-label="Popular requests showcase">
+                <div className="marquee-track">
+                  <div className="marquee-group" role="list" aria-label="Popular requests">
+                    {popularShowcase.map((s) => (
+                      <div className="showcase-card" role="listitem" key={s.title}>
+                        <div className="showcase-top">
+                          <div className="showcase-avatar" aria-hidden="true">
+                            {s.user}
+                          </div>
+                          <div className="showcase-ping" aria-hidden="true" />
+                        </div>
+                        <div className="showcase-title">{s.title}</div>
+                        <div className="showcase-meta">{s.meta}</div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="marquee-group" aria-hidden="true">
+                    {popularShowcase.map((s) => (
+                      <div className="showcase-card" key={`dup-${s.title}`}>
+                        <div className="showcase-top">
+                          <div className="showcase-avatar">{s.user}</div>
+                          <div className="showcase-ping" />
+                        </div>
+                        <div className="showcase-title">{s.title}</div>
+                        <div className="showcase-meta">{s.meta}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <p className="section-note">
+                Tip: Don’t overprice or underprice — you’ll get better results when your budget is close to
+                what the market is offering.
+              </p>
             </div>
           </section>
 
