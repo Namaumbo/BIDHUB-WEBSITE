@@ -241,15 +241,14 @@ function App() {
   ]
 
   const popularShowcase = [
-    { title: 'iPhone 13 (used)', meta: 'Lilongwe • Budget: MWK 650k', user: 'TN' },
-    { title: 'Laptop (Core i5, 8GB)', meta: 'Blantyre • Need today', user: 'MS' },
-    { title: 'Cement (50kg x 200)', meta: 'Zomba • Delivery needed', user: 'BK' },
-    { title: 'Solar kit (1.5kW)', meta: 'Mzuzu • Install included', user: 'RJ' },
-    { title: 'Groceries (bulk)', meta: 'Area 25 • Weekly supply', user: 'AM' },
-    { title: 'Motorbike tyres', meta: 'Kasungu • Size 90/90-17', user: 'CP' },
-    { title: 'Transport / delivery', meta: 'City wide • Same day', user: 'LK' },
-    { title: 'Event chairs & tents', meta: 'Weekend • 200 seats', user: 'DM' },
-    { title: 'Printer + ink', meta: 'University • Student rates', user: 'FN' },
+    { title: 'iPhone 13 (used)', meta: 'Lilongwe • Budget: MWK 650k', user: 'TN', img: '/showcase/phone.svg' },
+    { title: 'Laptop (Core i5, 8GB)', meta: 'Blantyre • Need today', user: 'MS', img: '/showcase/laptop.svg' },
+    { title: 'Cement (50kg x 200)', meta: 'Zomba • Delivery needed', user: 'BK', img: '/showcase/construction.svg' },
+    { title: 'Solar kit (1.5kW)', meta: 'Mzuzu • Install included', user: 'RJ', img: '/showcase/solar.svg' },
+    { title: 'Groceries (bulk)', meta: 'Area 25 • Weekly supply', user: 'AM', img: '/showcase/groceries.svg' },
+    { title: 'Transport / delivery', meta: 'City wide • Same day', user: 'LK', img: '/showcase/transport.svg' },
+    { title: 'Event chairs & tents', meta: 'Weekend • 200 seats', user: 'DM', img: '/showcase/construction.svg' },
+    { title: 'Printer + ink', meta: 'University • Student rates', user: 'FN', img: '/showcase/laptop.svg' },
   ]
 
   const marketplaceCards = [
@@ -525,6 +524,9 @@ function App() {
                   <div className="marquee-group" role="list" aria-label="Popular requests">
                     {popularShowcase.map((s) => (
                       <div className="showcase-card" role="listitem" key={s.title}>
+                        <div className="showcase-media" aria-hidden="true">
+                          <img src={s.img} alt="" loading="lazy" decoding="async" />
+                        </div>
                         <div className="showcase-top">
                           <div className="showcase-avatar" aria-hidden="true">
                             {s.user}
@@ -540,6 +542,9 @@ function App() {
                   <div className="marquee-group" aria-hidden="true">
                     {popularShowcase.map((s) => (
                       <div className="showcase-card" key={`dup-${s.title}`}>
+                        <div className="showcase-media">
+                          <img src={s.img} alt="" loading="lazy" decoding="async" />
+                        </div>
                         <div className="showcase-top">
                           <div className="showcase-avatar">{s.user}</div>
                           <div className="showcase-ping" />

@@ -444,6 +444,7 @@ video {
   from {
     transform: translateX(0);
   }
+
   to {
     transform: translateX(-50%);
   }
@@ -463,6 +464,24 @@ video {
   transform: translateZ(0);
   transform-style: preserve-3d;
   position: relative;
+}
+
+.showcase-media {
+  height: 110px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(229, 231, 235, 0.9);
+  background: rgba(148, 163, 184, 0.16);
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
+  transform: translateZ(12px);
+  position: relative;
+  z-index: 1;
+}
+
+.showcase-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .showcase-card::before {
@@ -525,10 +544,12 @@ video {
     transform: scale(0.25);
     opacity: 0.9;
   }
+
   70% {
     transform: scale(1);
     opacity: 0.2;
   }
+
   100% {
     transform: scale(1.05);
     opacity: 0;
@@ -556,6 +577,7 @@ video {
   .marquee-track {
     animation: none;
   }
+
   .showcase-ping::after {
     animation: none;
   }
@@ -906,6 +928,10 @@ video {
 
   .showcase-card {
     width: 220px;
+  }
+
+  .showcase-media {
+    height: 96px;
   }
 
   .steps-grid {
