@@ -82,6 +82,48 @@ function App() {
     },
   ]
 
+  const marketInsights = [
+    {
+      title: 'Price It Right (Don’t Over/Underprice)',
+      description:
+        'See what buyers are actually requesting and what sellers are offering. This helps you set fair prices that sell faster — without leaving money on the table.',
+      icon: (
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path
+            fill="currentColor"
+            d="M12 2a10 10 0 1 0 10 10A10.011 10.011 0 0 0 12 2Zm1 14.5V18a1 1 0 0 1-2 0v-1.5a3.5 3.5 0 0 1-3-3.5 1 1 0 0 1 2 0 1.5 1.5 0 0 0 3 0c0-.828-.724-1.25-2.09-1.77C9.27 10.71 8 9.9 8 8a3.5 3.5 0 0 1 3-3.5V4a1 1 0 0 1 2 0v.5a3.5 3.5 0 0 1 3 3.5 1 1 0 0 1-2 0 1.5 1.5 0 0 0-3 0c0 .828.724 1.25 2.09 1.77C14.73 10.29 16 11.1 16 13a3.5 3.5 0 0 1-3 3.5Z"
+          />
+        </svg>
+      ),
+    },
+    {
+      title: 'Connect to People Who Need What You Sell',
+      description:
+        'Instead of guessing, BidHub brings you direct requests from buyers. Sellers can respond with offers and market to real, ready-to-buy demand.',
+      icon: (
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path
+            fill="currentColor"
+            d="M16 11a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm-8 1a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm8 2c-3.314 0-6 1.79-6 4v2h12v-2c0-2.21-2.686-4-6-4Zm-8 1c-.998 0-1.93.146-2.73.4A4.53 4.53 0 0 1 8 18v2H2v-2c0-1.484 1.226-2.78 3.05-3.5A9.7 9.7 0 0 1 8 15Z"
+          />
+        </svg>
+      ),
+    },
+    {
+      title: 'Forecast What the Market Wants',
+      description:
+        'Buyer requests reveal trends early. Use demand signals to decide what to stock, what to promote, and how to price for your next sale.',
+      icon: (
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path
+            fill="currentColor"
+            d="M4 19a1 1 0 0 1-1-1V6a1 1 0 0 1 2 0v12h16a1 1 0 0 1 0 2H4Zm6-3a1 1 0 0 1-.707-1.707l4-4a1 1 0 0 1 1.414 0l1.793 1.793 3.293-3.293a1 1 0 0 1 1.414 1.414l-4 4a1 1 0 0 1-1.414 0L14 12.414l-3.293 3.293A1 1 0 0 1 10 16Z"
+          />
+        </svg>
+      ),
+    },
+  ]
+
   const howItWorks = [
     {
       step: '01',
@@ -186,7 +228,7 @@ function App() {
 
                 <div aria-hidden="true">
                   <div className="">
-                    
+
 
                     <video src="https://ouch-prod-src-cdn.icons8.com/vk/videos/e8DFV7jJQkPjJQxr.webm" autoPlay muted loop className="hero-gavel" />
                   </div>
@@ -232,6 +274,30 @@ function App() {
                     </div>
                     <h3 className="card-title">{f.title}</h3>
                     <p className="card-text">{f.description}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section className="section section-alt" aria-label="Pricing and market insights">
+            <div className="container">
+              <div className="section-header">
+                <h2>Pricing & Market Insights</h2>
+                <p>
+                  BidHub helps buyers get fair deals and helps sellers price correctly, reach people in
+                  need, and understand what the market wants.
+                </p>
+              </div>
+
+              <div className="cards-grid">
+                {marketInsights.map((m) => (
+                  <div className="card" key={m.title}>
+                    <div className="card-icon" aria-hidden="true">
+                      {m.icon}
+                    </div>
+                    <h3 className="card-title">{m.title}</h3>
+                    <p className="card-text">{m.description}</p>
                   </div>
                 ))}
               </div>
