@@ -295,20 +295,20 @@ function App() {
   const plans = [
     {
       name: 'Starter',
-      price: '$0',
+      price: 'Free',
       subtitle: 'Perfect for getting started',
       bullets: ['Post up to 3 requests/month', 'Receive seller bids', 'Standard support'],
     },
     {
       name: 'Professional',
-      price: '$19',
+      price: 'MK500',
       subtitle: 'For regular buyers & sellers',
       featured: true,
       bullets: ['Unlimited requests', 'Priority visibility for faster bids', 'Priority support'],
     },
     {
       name: 'Enterprise',
-      price: '$49',
+      price: 'MK1,000',
       subtitle: 'For teams and high-volume sellers',
       bullets: ['Team roles & permissions', 'Advanced security controls', 'Dedicated success manager'],
     },

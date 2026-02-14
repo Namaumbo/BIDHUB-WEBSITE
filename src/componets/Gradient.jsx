@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { NeatGradient } from '@firecms/neat'
+import ParticlesCanvas from './Particles'
 
 /**
  * Renders a NeatGradient canvas behind its children.
@@ -100,7 +101,8 @@ export default function BackgroundGradient({ children }) {
                     zIndex: 0,
                 }}
             />
-            <div className="bg-gradient-content" style={{ position: 'relative', zIndex: 1 }}>
+            <ParticlesCanvas />
+            <div className="bg-gradient-content" style={{ position: 'relative', zIndex: 2 }}>
                 {children}
             </div>
         </div>
