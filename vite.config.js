@@ -10,7 +10,7 @@ export default defineConfig({
     // Allow ngrok free-tier domains (covers changing subdomains)
     allowedHosts: ['.ngrok-free.dev'],
     host: true,
-    port: 5173,
+    port: 5174,
     strictPort: true,
   },
 })

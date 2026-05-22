@@ -942,3 +942,76 @@ video {
     grid-template-columns: 1fr;
   }
 }
+
+/* Scroll reveal animations */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition:
+    opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-stagger .reveal-child {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-stagger.is-visible .reveal-child {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: calc(var(--reveal-i, 0) * 90ms);
+}
+
+/* Hero: animate on first paint (no scroll needed) */
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(36px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-animate {
+  opacity: 0;
+  animation: hero-rise 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.hero-animate-delay-1 {
+  animation-delay: 0.12s;
+}
+
+.hero-animate-delay-2 {
+  animation-delay: 0.24s;
+}
+
+.hero-animate-delay-3 {
+  animation-delay: 0.36s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal-stagger .reveal-child {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .hero-animate {
+    opacity: 1;
+    animation: none;
+  }
+}

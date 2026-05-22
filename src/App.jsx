@@ -1,6 +1,8 @@
 import './App.css'
+import '@fontsource/sniglet';
 import Geometry from './componets/Geometry'
 import BackgroundGradient from './componets/Gradient'
+import { Reveal, RevealStagger } from './componets/Reveal'
 import { useEffect, useMemo, useState } from 'react'
 
 function App() {
@@ -381,16 +383,16 @@ function App() {
             <div className="container">
               <div className="hero-grid">
                 <div>
-                  <h1 className="hero-title">
+                  <h1 className="hero-title hero-animate">
                     Request It
                     <br /> Compare Offers.
                   </h1>
-                  <p className="hero-subtitle">
+                  <p className="hero-subtitle hero-animate hero-animate-delay-1">
                     Tell us what you’re looking for and receive competitive offers from sellers.
                     Compare price, delivery, and availability — then pick the best deal.
                   </p>
 
-                  <div className="hero-actions">
+                  <div className="hero-actions hero-animate hero-animate-delay-2">
                     <a className="btn btn-primary" href="#pricing">
                       Post a Request
                       <span className="btn-icon" aria-hidden="true">
@@ -406,10 +408,8 @@ function App() {
 
 
 
-                <div aria-hidden="true">
+                <div aria-hidden="true" className="hero-animate hero-animate-delay-3">
                   <div className="">
-
-
                     <video src="https://ouch-prod-src-cdn.icons8.com/vk/videos/e8DFV7jJQkPjJQxr.webm" autoPlay muted loop className="hero-gavel" />
                   </div>
                 </div>
@@ -419,36 +419,36 @@ function App() {
         </BackgroundGradient>
         <section className="stats" aria-label="BidHub stats">
           <div className="container">
-            <div className="stats-grid">
-              <div className="stat">
+            <RevealStagger className="stats-grid">
+              <div className="stat reveal-child" style={{ '--reveal-i': 0 }}>
                 <div className="stat-value">50K+</div>
                 <div className="stat-label">Active Buyers</div>
               </div>
-              <div className="stat">
+              <div className="stat reveal-child" style={{ '--reveal-i': 1 }}>
                 <div className="stat-value">100K+</div>
                 <div className="stat-label">Requests Posted</div>
               </div>
-              <div className="stat">
+              <div className="stat reveal-child" style={{ '--reveal-i': 2 }}>
                 <div className="stat-value">$5M+</div>
                 <div className="stat-label">Offers Made</div>
               </div>
-            </div>
+            </RevealStagger>
           </div>
         </section>
         <Geometry>
           <section className="section" id="features">
             <div className="container">
-              <div className="section-header">
+              <Reveal className="section-header">
                 <h2>Why Choose BidHub?</h2>
                 <p>
                   Everything you need to post what you want and receive competitive seller bids from a
                   trusted community.
                 </p>
-              </div>
+              </Reveal>
 
-              <div className="cards-grid">
-                {features.map((f) => (
-                  <div className="card" key={f.title}>
+              <RevealStagger className="cards-grid">
+                {features.map((f, idx) => (
+                  <div className="card reveal-child" key={f.title} style={{ '--reveal-i': idx }}>
                     <div className="card-icon" aria-hidden="true">
                       {f.icon}
                     </div>
@@ -456,23 +456,23 @@ function App() {
                     <p className="card-text">{f.description}</p>
                   </div>
                 ))}
-              </div>
+              </RevealStagger>
             </div>
           </section>
 
           <section className="section section-alt" id="examples" aria-label="Examples of what you can post">
             <div className="container">
-              <div className="section-header">
+              <Reveal className="section-header">
                 <h2>What You Can Request on BidHub</h2>
                 <p>
                   Post what you want to buy (or a service you need). Sellers respond with offers you can
                   compare.
                 </p>
-              </div>
+              </Reveal>
 
-              <div className="cards-grid">
-                {acceptedExamples.map((e) => (
-                  <div className="card" key={e.title}>
+              <RevealStagger className="cards-grid">
+                {acceptedExamples.map((e, idx) => (
+                  <div className="card reveal-child" key={e.title} style={{ '--reveal-i': idx }}>
                     <div className="card-icon" aria-hidden="true">
                       {e.icon}
                     </div>
@@ -480,46 +480,46 @@ function App() {
                     <p className="card-text">{e.description}</p>
                   </div>
                 ))}
-              </div>
+              </RevealStagger>
             </div>
           </section>
 
           <section className="section" id="marketplaces" aria-label="Marketplace aggregation">
             <div className="container">
-              <div className="section-header">
+              <Reveal className="section-header">
                 <h2>All Marketplaces, One Place</h2>
                 <p>
                   We’re building integrations to bring listings from WhatsApp and Facebook into a single
                   experience — especially helpful when seller bids are not available.
                 </p>
-              </div>
+              </Reveal>
 
-              <div className="cards-grid">
-                {marketplaceCards.map((c) => (
-                  <div className="card" key={c.title}>
+              <RevealStagger className="cards-grid">
+                {marketplaceCards.map((c, idx) => (
+                  <div className="card reveal-child" key={c.title} style={{ '--reveal-i': idx }}>
                     <h3 className="card-title">{c.title}</h3>
                     <p className="card-text">{c.description}</p>
                   </div>
                 ))}
-              </div>
+              </RevealStagger>
 
-              <p className="section-note">
+              <Reveal className="section-note" delay={120}>
                 Integrations depend on what’s permitted by each platform and the groups/pages you connect.
-              </p>
+              </Reveal>
             </div>
           </section>
 
           <section className="section section-alt" id="popular-requests" aria-label="Popular requests">
             <div className="container">
-              <div className="section-header">
+              <Reveal className="section-header">
                 <h2>Popular Requests</h2>
                 <p>
                   Live-style examples of what people post — scroll through and copy the wording to start
                   fast.
                 </p>
-              </div>
+              </Reveal>
 
-              <div className="marquee" aria-label="Popular requests showcase">
+              <Reveal className="marquee" delay={80} aria-label="Popular requests showcase">
                 <div className="marquee-track">
                   <div className="marquee-group" role="list" aria-label="Popular requests">
                     {popularShowcase.map((s) => (
@@ -555,28 +555,28 @@ function App() {
                     ))}
                   </div>
                 </div>
-              </div>
+              </Reveal>
 
-              <p className="section-note">
+              <Reveal className="section-note" delay={100}>
                 Tip: Don’t overprice or underprice — you’ll get better results when your budget is close to
                 what the market is offering.
-              </p>
+              </Reveal>
             </div>
           </section>
 
           <section className="section section-alt" aria-label="Pricing and market insights">
             <div className="container">
-              <div className="section-header">
+              <Reveal className="section-header">
                 <h2>Pricing & Market Insights</h2>
                 <p>
                   BidHub helps buyers get fair deals and helps sellers price correctly, reach people in
                   need, and understand what the market wants.
                 </p>
-              </div>
+              </Reveal>
 
-              <div className="cards-grid">
-                {marketInsights.map((m) => (
-                  <div className="card" key={m.title}>
+              <RevealStagger className="cards-grid">
+                {marketInsights.map((m, idx) => (
+                  <div className="card reveal-child" key={m.title} style={{ '--reveal-i': idx }}>
                     <div className="card-icon" aria-hidden="true">
                       {m.icon}
                     </div>
@@ -584,20 +584,20 @@ function App() {
                     <p className="card-text">{m.description}</p>
                   </div>
                 ))}
-              </div>
+              </RevealStagger>
             </div>
           </section>
 
           <section className="section section-alt" id="how-it-works">
             <div className="container">
-              <div className="section-header">
+              <Reveal className="section-header">
                 <h2>How It Works</h2>
                 <p>Post a request, receive offers, and choose the best seller — all in 4 simple steps.</p>
-              </div>
+              </Reveal>
 
-              <div className="steps-grid">
+              <RevealStagger className="steps-grid">
                 {howItWorks.map((s, idx) => (
-                  <div className="step-card" key={s.step}>
+                  <div className="step-card reveal-child" key={s.step} style={{ '--reveal-i': idx }}>
                     <div className="step-number">{s.step}</div>
                     <h3 className="step-title">{s.title}</h3>
                     <p className="step-text">{s.description}</p>
@@ -608,20 +608,24 @@ function App() {
                     ) : null}
                   </div>
                 ))}
-              </div>
+              </RevealStagger>
             </div>
           </section>
 
           <section className="section" id="pricing">
             <div className="container">
-              <div className="section-header">
+              <Reveal className="section-header">
                 <h2>Simple, Transparent Pricing</h2>
                 <p>Choose the plan that works best for you</p>
-              </div>
+              </Reveal>
 
-              <div className="pricing-grid">
-                {plans.map((p) => (
-                  <div className={`price-card ${p.featured ? 'featured' : ''}`} key={p.name}>
+              <RevealStagger className="pricing-grid">
+                {plans.map((p, idx) => (
+                  <div
+                    className={`price-card reveal-child ${p.featured ? 'featured' : ''}`}
+                    key={p.name}
+                    style={{ '--reveal-i': idx }}
+                  >
                     <div className="price-top">
                       <h3 className="price-name">{p.name}</h3>
                       <div className="price-value">
@@ -650,19 +654,21 @@ function App() {
                     </a>
                   </div>
                 ))}
-              </div>
+              </RevealStagger>
             </div>
           </section>
 
           <section className="cta" id="cta">
             <div className="container">
-              <h2>Ready to Get Better Deals?</h2>
-              <p>
-                Post what you want today and let sellers compete to give you the best price and delivery.
-              </p>
-              <a className="btn btn-primary" href="#top">
-                Post Your First Request
-              </a>
+              <Reveal>
+                <h2>Ready to Get Better Deals?</h2>
+                <p>
+                  Post what you want today and let sellers compete to give you the best price and delivery.
+                </p>
+                <a className="btn btn-primary" href="#top">
+                  Post Your First Request
+                </a>
+              </Reveal>
             </div>
           </section>
         </Geometry>
@@ -672,37 +678,37 @@ function App() {
 
       <footer className="footer">
         <div className="container">
-          <div className="footer-grid">
-            <div className="footer-brand">
+          <RevealStagger className="footer-grid">
+            <div className="footer-brand reveal-child" style={{ '--reveal-i': 0 }}>
               <div className="footer-logo">BidHub</div>
               <p>Post what you want and let sellers compete for your business.</p>
             </div>
 
-            <div className="footer-col">
+            <div className="footer-col reveal-child" style={{ '--reveal-i': 1 }}>
               <div className="footer-title">Product</div>
               <a href="#features">Features</a>
               <a href="#pricing">Pricing</a>
               <a href="#how-it-works">Security</a>
             </div>
 
-            <div className="footer-col">
+            <div className="footer-col reveal-child" style={{ '--reveal-i': 2 }}>
               <div className="footer-title">Company</div>
               <a href="#top">About</a>
               <a href="#top">Blog</a>
               <a href="#cta">Contact</a>
             </div>
 
-            <div className="footer-col">
+            <div className="footer-col reveal-child" style={{ '--reveal-i': 3 }}>
               <div className="footer-title">Legal</div>
               <a href="#top">Privacy</a>
               <a href="#top">Terms</a>
               <a href="#top">Cookies</a>
             </div>
-          </div>
+          </RevealStagger>
 
-          <div className="footer-bottom">
+          <Reveal className="footer-bottom">
             <span>&copy; 2026 BidHub. All rights reserved.</span>
-          </div>
+          </Reveal>
         </div>
       </footer>
     </div>
