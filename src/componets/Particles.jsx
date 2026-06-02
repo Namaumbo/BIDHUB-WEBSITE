@@ -9,7 +9,7 @@ export default function ParticlesCanvas({ density = 0.00008 }) {
   const canvasRef = useRef(null)
   const stateRef = useRef({ raf: 0, running: false, particles: [] })
 
-  const baseColor = useMemo(() => ({ r: 11, g: 74, b: 116 }), [])
+  const baseColor = useMemo(() => ({ r: 255, g: 107, b: 43 }), [])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -61,8 +61,8 @@ export default function ParticlesCanvas({ density = 0.00008 }) {
 
       // soft vignette to blend with gradient
       const g = ctx.createRadialGradient(w * 0.5, h * 0.2, 0, w * 0.5, h * 0.2, Math.max(w, h) * 0.9)
-      g.addColorStop(0, 'rgba(255,255,255,0)')
-      g.addColorStop(1, 'rgba(255,255,255,0.14)')
+      g.addColorStop(0, 'rgba(0,0,0,0)')
+      g.addColorStop(1, 'rgba(0,0,0,0)')
       ctx.fillStyle = g
       ctx.fillRect(0, 0, w, h)
 

@@ -1,8 +1,8 @@
 .geometry-grid {
     background-image:
-        linear-gradient(to right, #d1d5db 1px, transparent 1px),
-        linear-gradient(to bottom, #d1d5db 1px, transparent 1px);
-    background-size: 32px 32px;
-    -webkit-mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, #000 30%, transparent 70%);
-    mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, #000 30%, transparent 70%);
+        linear-gradient(to right, rgba(255, 107, 43, 0.07) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 107, 43, 0.07) 1px, transparent 1px);
+    background-size: 40px 40px;
+    -webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, #000 20%, transparent 75%);
+    mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, #000 20%, transparent 75%);
 }
