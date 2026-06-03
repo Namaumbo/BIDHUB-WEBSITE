@@ -1,15 +1,13 @@
-/* Global font (loads automatically)
-   A clean, modern UI font similar to what many SaaS sites use. */
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap');
 
 :root {
-  font-family: 'Sniglet', system-ui;
+  font-family: 'Sniglet', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: dark;
-  color: #f0f4ff;
-  background-color: #080c14;
+  color: #edf1ff;
+  background-color: #040811;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -21,9 +19,7 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background: #080c14;
+  background: #040811;
 }
 
-a {
-  color: inherit;
-}
+a { color: inherit; }
