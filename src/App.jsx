@@ -1,9 +1,129 @@
 import './App.css'
-import '@fontsource/sniglet'
-import Geometry from './componets/Geometry'
-import BackgroundGradient from './componets/Gradient'
 import { Reveal, RevealStagger } from './componets/Reveal'
 import { useEffect, useRef, useState, useMemo } from 'react'
+
+/* ─── Unsplash portrait helper (hotlinked from Unsplash CDN) ── */
+const face = (id, s = 160) =>
+  `https://images.unsplash.com/photo-${id}?w=${s}&h=${s}&q=70&auto=format&fit=crop&crop=faces`
+
+/* ─── Decorative bits (Peppermint-style sparkles & swirls) ─── */
+function Sparkle({ className = '' }) {
+  return (
+    <svg className={`sparkle ${className}`} viewBox="0 0 24 24" aria-hidden="true">
+      <path fill="currentColor" d="M12 0c1.2 6.9 4.9 10.8 12 12-7.1 1.2-10.8 5.1-12 12-1.2-6.9-4.9-10.8-12-12C7.1 10.8 10.8 6.9 12 0Z" />
+    </svg>
+  )
+}
+
+function TitleSwirl() {
+  return (
+    <svg className="title-swirl" viewBox="0 0 260 26" aria-hidden="true" preserveAspectRatio="none">
+      <path
+        d="M4 19C50 7 96 5 128 12c30 7 53 10 80 4 17-4 32-7 48-4"
+        fill="none" stroke="currentColor" strokeWidth="7" strokeLinecap="round"
+      />
+    </svg>
+  )
+}
+
+function HeroSwirl({ className = '' }) {
+  return (
+    <svg className={`hero-swirl ${className}`} viewBox="0 0 120 90" aria-hidden="true">
+      <path
+        d="M6 70C20 30 52 8 76 16c20 7 16 32-2 34-15 2-22-14-10-26C76 12 102 14 114 38"
+        fill="none" stroke="currentColor" strokeWidth="7" strokeLinecap="round"
+      />
+    </svg>
+  )
+}
+
+/* ─── Scroll-driven laptop demo ─────────────────────── */
+function clamp01(v) { return Math.min(1, Math.max(0, v)) }
+
+function LaptopScrolly({ scenes }) {
+  const sectionRef = useRef(null)
+  const [progress, setProgress] = useState(0)
+
+  useEffect(() => {
+    let raf = 0
+    const update = () => {
+      const el = sectionRef.current
+      if (!el) return
+      const rect = el.getBoundingClientRect()
+      const total = rect.height - window.innerHeight
+      setProgress(total > 0 ? clamp01(-rect.top / total) : 0)
+    }
+    const onScroll = () => {
+      cancelAnimationFrame(raf)
+      raf = requestAnimationFrame(update)
+    }
+    update()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+    return () => {
+      cancelAnimationFrame(raf)
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+    }
+  }, [])
+
+  const reduced = useMemo(
+    () => window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false,
+    [],
+  )
+
+  // phase 1: lid opens — phase 2: screen content scrolls through the scenes
+  const open = reduced ? 1 : clamp01(progress / 0.22)
+  const slide = clamp01((progress - 0.28) / 0.68) * (scenes.length - 1)
+  const active = Math.round(slide)
+
+  return (
+    <div className="scrolly" ref={sectionRef}>
+      <div className="scrolly-sticky">
+        <div className="scrolly-grid">
+
+          <div className="scrolly-captions">
+            {scenes.map((s, i) => (
+              <div key={s.title} className={`scrolly-caption tone-${s.tone}${i === active ? ' is-active' : ''}`}>
+                <div className="scrolly-caption-num">{String(i + 1).padStart(2, '0')}</div>
+                <div>
+                  <div className="scrolly-caption-title">{s.title}</div>
+                  <p className="scrolly-caption-text">{s.text}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="laptop-wrap" aria-hidden="true">
+            <Sparkle className="laptop-star-1" />
+            <Sparkle className="laptop-star-2" />
+            <div className="laptop" style={{ '--open': open, '--slide': slide }}>
+              <div className="laptop-lid">
+                <div className="laptop-screen">
+                  <div className="laptop-chrome">
+                    <span className="chrome-dot cd-1" />
+                    <span className="chrome-dot cd-2" />
+                    <span className="chrome-dot cd-3" />
+                    <span className="chrome-url">bidhub.mw</span>
+                  </div>
+                  <div className="laptop-viewport">
+                    <div className="laptop-slides">
+                      {scenes.map((s) => (
+                        <div className="laptop-slide" key={s.title}>{s.screen}</div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="laptop-base"><span className="laptop-notch" /></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  )
+}
 
 /* ─── Animated counter hook ────────────────────────── */
 function useCountUp(target, duration = 2000) {
@@ -33,10 +153,11 @@ function useCountUp(target, duration = 2000) {
 }
 
 /* ─── Stat card with counter ────────────────────────── */
-function StatCard({ target, suffix, label, revealIndex }) {
+function StatCard({ target, suffix, label, tone, revealIndex }) {
   const [val, ref] = useCountUp(target)
   return (
-    <div className="stat reveal-child" ref={ref} style={{ '--reveal-i': revealIndex }}>
+    <div className={`stat tone-${tone} reveal-child`} ref={ref} style={{ '--reveal-i': revealIndex }}>
+      <Sparkle className="stat-sparkle" />
       <div className="stat-value">{val}{suffix}</div>
       <div className="stat-label">{label}</div>
     </div>
@@ -63,7 +184,11 @@ function HeroMock() {
 
   return (
     <div className="hero-mock" aria-label="Live bidding demo">
-      <div className="mock-glow" aria-hidden="true" />
+      <div className="hero-shape" aria-hidden="true" />
+      <Sparkle className="hero-star hero-star-1" />
+      <Sparkle className="hero-star hero-star-2" />
+      <Sparkle className="hero-star hero-star-3" />
+      <HeroSwirl className="hero-swirl-pink" />
 
       <div className="mock-phone">
         {/* top bar */}
@@ -139,12 +264,11 @@ export default function App() {
   }, [mobileMenuOpen])
 
   const navLinks = useMemo(() => [
-    { href: '#features',        label: 'Features'    },
-    { href: '#examples',        label: 'Examples'    },
-    { href: '#marketplaces',    label: 'Marketplaces'},
-    { href: '#popular-requests',label: 'Popular'     },
-    { href: '#how-it-works',    label: 'How It Works'},
-    { href: '#pricing',         label: 'Pricing'     },
+    { href: '#features',     label: 'Features'     },
+    { href: '#examples',     label: 'Categories'   },
+    { href: '#how-it-works', label: 'How It Works' },
+    { href: '#pricing',      label: 'Pricing'      },
+    { href: '#faq',          label: 'FAQ'          },
   ], [])
 
   const cities = [
@@ -152,47 +276,90 @@ export default function App() {
     'Kasungu','Mangochi','Dedza','Karonga','Nkhotakota',
   ]
 
-  const features = [
+  const laptopScenes = [
     {
-      title: 'Post What You Want',
-      description: 'Tell sellers what you need (with details and photos if you have them). Your request goes live instantly.',
-      icon: (
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 3a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V8.414a1 1 0 0 0-.293-.707l-4.414-4.414A1 1 0 0 0 12.586 3H7Zm10 17H7V4h5v4a1 1 0 0 0 1 1h4v11Z"/></svg>
+      title: 'Post what you want',
+      text: 'Describe the item, set your budget, add a photo — your request goes live instantly.',
+      tone: 'yellow',
+      screen: (
+        <div className="ls ls-form">
+          <div className="ls-heading">New request ✍️</div>
+          <div className="ls-field">
+            <span className="ls-label">What do you want?</span>
+            <span className="ls-value">iPhone 13 (used) 📱</span>
+          </div>
+          <div className="ls-field">
+            <span className="ls-label">Your budget</span>
+            <span className="ls-value">MWK 650,000</span>
+          </div>
+          <div className="ls-field">
+            <span className="ls-label">Location</span>
+            <span className="ls-value">Lilongwe</span>
+          </div>
+          <div className="ls-btn">Post request →</div>
+        </div>
       ),
     },
     {
-      title: 'Receive Seller Offers',
-      description: 'Sellers compete by sending you bids with price, delivery options, and item condition so you can compare easily.',
-      icon: (
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 19a1 1 0 0 1-1-1V6a1 1 0 0 1 2 0v12h16a1 1 0 0 1 0 2H4Zm6-3a1 1 0 0 1-.707-1.707l4-4a1 1 0 0 1 1.414 0l1.793 1.793 3.293-3.293a1 1 0 0 1 1.414 1.414l-4 4a1 1 0 0 1-1.414 0L14 12.414l-3.293 3.293A1 1 0 0 1 10 16Z"/></svg>
+      title: 'Offers roll in, live',
+      text: 'Sellers compete for your request with real prices, delivery options and condition — updated in real time.',
+      tone: 'pink',
+      screen: (
+        <div className="ls ls-bids">
+          <div className="ls-heading">
+            Incoming bids
+            <span className="ls-live"><span className="ls-live-dot" />Live</span>
+          </div>
+          {[
+            { ab: 'TS', name: 'TechStore Lil.', price: '580k', stars: '★★★★★' },
+            { ab: 'PH', name: 'PhoneHub MW',    price: '600k', stars: '★★★★☆' },
+            { ab: 'IM', name: 'iMart Deals',    price: '570k', stars: '★★★★★' },
+          ].map((b) => (
+            <div className="ls-bid" key={b.ab}>
+              <span className="ls-bid-av">{b.ab}</span>
+              <span className="ls-bid-name">{b.name}<em>{b.stars}</em></span>
+              <span className="ls-bid-price">MWK {b.price}</span>
+            </div>
+          ))}
+        </div>
       ),
     },
     {
-      title: 'Pick the Best Deal',
-      description: 'Choose the offer that fits your budget and timeline. You stay in control from the first bid to the final deal.',
-      icon: (
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2 20 6v6c0 5.25-3.438 9.938-8 11-4.563-1.062-8-5.75-8-11V6l8-4Zm0 2.236L6 7v5c0 4.166 2.563 8.01 6 9.764 3.438-1.754 6-5.598 6-9.764V7l-6-2.764Z"/></svg>
+      title: 'Compare & pick a winner',
+      text: 'Stack offers side by side and check verified seller ratings before you commit to anything.',
+      tone: 'mint',
+      screen: (
+        <div className="ls ls-compare">
+          <div className="ls-heading">Compare offers ⚖️</div>
+          <div className="ls-compare-row">
+            <div className="ls-offer">
+              <span className="ls-offer-price">600k</span>
+              <span className="ls-offer-meta">3 days</span>
+            </div>
+            <div className="ls-offer ls-offer-best">
+              <span className="ls-offer-tag">Best</span>
+              <span className="ls-offer-price">570k</span>
+              <span className="ls-offer-meta">Same day</span>
+            </div>
+            <div className="ls-offer">
+              <span className="ls-offer-price">580k</span>
+              <span className="ls-offer-meta">Tomorrow</span>
+            </div>
+          </div>
+          <div className="ls-btn">Accept best offer ✓</div>
+        </div>
       ),
     },
     {
-      title: 'Trusted Seller Network',
-      description: 'Browse seller profiles and build confidence with clear communication and a growing community of verified users.',
-      icon: (
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16 11a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm-8 1a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm8 2c-3.314 0-6 1.79-6 4v2h12v-2c0-2.21-2.686-4-6-4Zm-8 1c-.998 0-1.93.146-2.73.4A4.53 4.53 0 0 1 8 18v2H2v-2c0-1.484 1.226-2.78 3.05-3.5A9.7 9.7 0 0 1 8 15Z"/></svg>
-      ),
-    },
-    {
-      title: 'Real-time Updates',
-      description: 'Get notified as new offers come in and track everything in one place.',
-      icon: (
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 1 0 10 10A10.011 10.011 0 0 0 12 2Zm0 18a8 8 0 1 1 8-8 8.009 8.009 0 0 1-8 8Zm1-13a1 1 0 0 0-2 0v5a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586Z"/></svg>
-      ),
-    },
-    {
-      title: 'Better Prices, Faster',
-      description: 'Competition drives better prices for buyers and more sales for sellers — everyone wins.',
-      icon: (
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 17a1 1 0 0 1-.707-1.707l9-9A1 1 0 0 1 17 7v3a1 1 0 0 1-2 0V9.414l-7.293 7.293A1 1 0 0 1 7 17Zm0 4a1 1 0 0 1-1-1v-3a1 1 0 0 1 2 0v2h14a1 1 0 0 1 0 2H7Z"/></svg>
+      title: 'Close the deal & save',
+      text: 'Competition drives prices down — accept the best bid and arrange delivery. Everyone wins.',
+      tone: 'sky',
+      screen: (
+        <div className="ls ls-done">
+          <div className="ls-done-check">✓</div>
+          <div className="ls-done-title">Deal closed!</div>
+          <div className="ls-done-sub">You saved <strong>MWK 80,000</strong> 🎉</div>
+        </div>
       ),
     },
   ]
@@ -202,49 +369,37 @@ export default function App() {
       title: 'Phones & Laptops',
       description: 'New or used devices, accessories, repairs, and upgrades.',
       img: '/showcase/phone.svg',
-      icon: (
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm10 2H7v16h10V4Zm-4 15a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/></svg>
-      ),
+      tone: 'sky',
     },
     {
       title: 'Construction Materials',
       description: 'Cement, iron sheets, paint, tools, plumbing, electrical supplies.',
       img: '/showcase/construction.svg',
-      icon: (
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2 2 7v10l10 5 10-5V7L12 2Zm0 2.236L20 8v.764l-8 4-8-4V8l8-3.764ZM4 10.236l7 3.5V20.2l-7-3.5v-6.464Zm16 0V16.7l-7 3.5v-6.464l7-3.5Z"/></svg>
-      ),
+      tone: 'yellow',
     },
     {
       title: 'Groceries & Household',
       description: 'Bulk groceries, cleaning supplies, home essentials, deliveries.',
       img: '/showcase/groceries.svg',
-      icon: (
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 4a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3h2a1 1 0 0 1 1 1v3a6 6 0 0 1-6 6h-4a6 6 0 0 1-6-6V8a1 1 0 0 1 1-1h2V4Zm2 3h6V5H9v2Zm-3 2v2a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V9H6Z"/></svg>
-      ),
+      tone: 'mint',
     },
     {
       title: 'Services',
       description: 'Transport, home repairs, tailoring, printing, events, and more.',
       img: '/showcase/transport.svg',
-      icon: (
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a4 4 0 0 1 4 4v1h1a3 3 0 0 1 3 3v2a3 3 0 0 1-3 3h-1v1a4 4 0 0 1-8 0v-1H7a3 3 0 0 1-3-3v-2a3 3 0 0 1 3-3h1V6a4 4 0 0 1 4-4Zm2 5V6a2 2 0 0 0-4 0v1h4Zm-4 8v1a2 2 0 0 0 4 0v-1h-4Zm-3-2h10a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1Z"/></svg>
-      ),
+      tone: 'pink',
     },
     {
       title: 'Vehicles & Parts',
       description: 'Cars/motorbikes, parts, tyres, batteries, servicing and repairs.',
       img: '/showcase/transport.svg',
-      icon: (
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 11 6.5 6.5A3 3 0 0 1 9.343 4h5.314A3 3 0 0 1 17.5 6.5L19 11v7a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-1H8v1a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-7Zm3.343-5a1 1 0 0 0-.949.684L6.613 9h10.774l-.781-2.316A1 1 0 0 0 15.657 6H8.343ZM7.5 15a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm9 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"/></svg>
-      ),
+      tone: 'lavender',
     },
     {
       title: 'Wholesale & Bulk',
       description: 'Stock requests for shops: beverages, food, electronics, supplies.',
       img: '/showcase/laptop.svg',
-      icon: (
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21 7 12 2 3 7v10l9 5 9-5V7Zm-2 1.236V16l-7 3.889V12.5l7-4.264ZM12 4.264 18.764 8 12 11.736 5.236 8 12 4.264ZM5 9.236l7 4.264v7.389L5 16V9.236Z"/></svg>
-      ),
+      tone: 'cream',
     },
   ]
 
@@ -272,46 +427,53 @@ export default function App() {
     },
   ]
 
-  const marketplaceCards = [
+  const popularShowcase = [
+    { title: 'iPhone 13 (used)',      meta: 'Lilongwe · MWK 650k',      user: 'TN', img: '/showcase/phone.svg',        photo: face('1539571696357-5a69c17a67c6') },
+    { title: 'Laptop (Core i5, 8GB)',  meta: 'Blantyre · Need today',     user: 'MS', img: '/showcase/laptop.svg',       photo: face('1573496359142-b8d87734a5a2') },
+    { title: 'Cement (50kg x 200)',    meta: 'Zomba · Delivery needed',   user: 'BK', img: '/showcase/construction.svg', photo: face('1560250097-0b93528c311a') },
+    { title: 'Solar kit (1.5kW)',      meta: 'Mzuzu · Install included',  user: 'RJ', img: '/showcase/solar.svg',        photo: face('1507003211169-0a1dd7228f2d') },
+    { title: 'Groceries (bulk)',       meta: 'Area 25 · Weekly supply',   user: 'AM', img: '/showcase/groceries.svg',    photo: face('1567532939604-b6b5b0db2604') },
+    { title: 'Transport / delivery',   meta: 'City wide · Same day',      user: 'LK', img: '/showcase/transport.svg',   photo: face('1506794778202-cad84cf45f1d') },
+    { title: 'Event chairs & tents',   meta: 'Weekend · 200 seats',       user: 'DM', img: '/showcase/construction.svg', photo: face('1573497019940-1c28c88b4f3e') },
+    { title: 'Printer + ink',          meta: 'University · Student rates',user: 'FN', img: '/showcase/laptop.svg',       photo: face('1544717305-2782549b5136') },
+  ]
+
+  const testimonials = [
     {
-      title: 'All listings in one place',
-      description: 'Instead of jumping between WhatsApp and Facebook, BidHub can bring relevant listings into one feed so you can compare faster.',
-      icon: (
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 5h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2Zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2Zm0 6h10a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2Z"/></svg>
-      ),
+      quote: 'I posted a request for a camera lens in the morning and had five bids by lunch. Picked the best one and saved MWK 45,000.',
+      name: 'Thoko M.',
+      role: 'Photographer · Lilongwe',
+      tone: 'yellow',
+      photo: face('1531384441138-2736e62e0919', 200),
     },
     {
-      title: 'If bids are low, we still help',
-      description: 'When you don\'t get enough seller offers, we can surface matching listings from connected marketplaces so you still have options.',
-      icon: (
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M11 17a1 1 0 1 0 2 0 1 1 0 0 0-2 0Zm0-14a1 1 0 0 1 2 0v9a1 1 0 0 1-2 0V3Z"/></svg>
-      ),
+      quote: 'As a shop owner, BidHub shows me exactly what people want to buy. I stopped guessing what to stock.',
+      name: 'Grace B.',
+      role: 'Shop owner · Blantyre',
+      tone: 'pink',
+      photo: face('1573497019940-1c28c88b4f3e', 200),
     },
     {
-      title: 'Market signals for sellers',
-      description: 'Sellers can spot what buyers are asking for, connect to people in need, and forecast demand to stock smarter.',
-      icon: (
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 3h18v2H3V3Zm0 16h18v2H3v-2Zm0-8h10v2H3v-2Zm14 0 4 4-4 4v-3h-4v-2h4V11Z"/></svg>
-      ),
+      quote: 'No more endless WhatsApp groups. One request, and sellers come to me with their best prices.',
+      name: 'James C.',
+      role: 'Reseller · Mzuzu',
+      tone: 'mint',
+      photo: face('1522529599102-193c0d76b5b6', 200),
     },
   ]
 
-  const popularShowcase = [
-    { title: 'iPhone 13 (used)',      meta: 'Lilongwe · MWK 650k',      user: 'TN', img: '/showcase/phone.svg'        },
-    { title: 'Laptop (Core i5, 8GB)',  meta: 'Blantyre · Need today',     user: 'MS', img: '/showcase/laptop.svg'       },
-    { title: 'Cement (50kg x 200)',    meta: 'Zomba · Delivery needed',   user: 'BK', img: '/showcase/construction.svg' },
-    { title: 'Solar kit (1.5kW)',      meta: 'Mzuzu · Install included',  user: 'RJ', img: '/showcase/solar.svg'        },
-    { title: 'Groceries (bulk)',       meta: 'Area 25 · Weekly supply',   user: 'AM', img: '/showcase/groceries.svg'    },
-    { title: 'Transport / delivery',   meta: 'City wide · Same day',      user: 'LK', img: '/showcase/transport.svg'   },
-    { title: 'Event chairs & tents',   meta: 'Weekend · 200 seats',       user: 'DM', img: '/showcase/construction.svg'},
-    { title: 'Printer + ink',          meta: 'University · Student rates',user: 'FN', img: '/showcase/laptop.svg'      },
+  const heroFaces = [
+    face('1522529599102-193c0d76b5b6', 96),
+    face('1573496359142-b8d87734a5a2', 96),
+    face('1531384441138-2736e62e0919', 96),
+    face('1567532939604-b6b5b0db2604', 96),
   ]
 
   const howItWorks = [
-    { step: '01', title: 'Create Your Account', description: 'Sign up in seconds and start posting requests right away.' },
-    { step: '02', title: 'Post What You Want',   description: 'Describe the item, your budget, and delivery preference (optional photos).' },
-    { step: '03', title: 'Get Seller Bids',       description: 'Sellers send competitive offers with price, availability, and delivery details.' },
-    { step: '04', title: 'Choose & Buy',           description: 'Compare offers, chat if needed, then pick the best one and complete the deal.' },
+    { step: '01', tone: 'yellow', title: 'Create Your Account', description: 'Sign up in seconds and start posting requests right away.' },
+    { step: '02', tone: 'pink',   title: 'Post What You Want',  description: 'Describe the item, your budget, and delivery preference (optional photos).' },
+    { step: '03', tone: 'mint',   title: 'Get Seller Bids',     description: 'Sellers send competitive offers with price, availability, and delivery details.' },
+    { step: '04', tone: 'sky',    title: 'Choose & Buy',        description: 'Compare offers, chat if needed, then pick the best one and complete the deal.' },
   ]
 
   const plans = [
@@ -336,6 +498,37 @@ export default function App() {
     },
   ]
 
+  const faqs = [
+    {
+      q: 'What exactly is BidHub?',
+      a: 'BidHub is a reverse marketplace for Malawi. Instead of browsing endless listings, you post what you want to buy and sellers come to you with competing offers. You compare price, delivery, and condition — then pick the winner.',
+    },
+    {
+      q: 'Is it free to post a request?',
+      a: 'Yes! The Starter plan lets you post up to 3 requests every month for free. If you buy or sell regularly, the Professional plan unlocks unlimited requests and priority visibility.',
+    },
+    {
+      q: 'How do sellers find my request?',
+      a: 'Your request is categorised and shown to sellers who deal in that category and operate in your area. Relevant sellers get notified instantly, so bids usually start arriving within minutes.',
+    },
+    {
+      q: 'How do payments and delivery work?',
+      a: 'You agree on the details directly with the seller you choose — mobile money (Airtel Money, TNM Mpamba), bank transfer, or cash on delivery. Each bid includes the seller\'s delivery options so there are no surprises.',
+    },
+    {
+      q: 'Are sellers verified?',
+      a: 'Sellers build public profiles with ratings and reviews from completed deals, and we verify business details for our seller network. You can always check a seller\'s track record before accepting their bid.',
+    },
+    {
+      q: 'Which cities does BidHub cover?',
+      a: 'BidHub is active across Malawi — Lilongwe, Blantyre, Mzuzu, Zomba and beyond. The more specific your location, the better your matches.',
+    },
+    {
+      q: 'Can I sell on BidHub too?',
+      a: 'Absolutely. Create a seller profile, browse live buyer requests in your categories, and respond with your best offer. It\'s direct access to people who are ready to buy right now.',
+    },
+  ]
+
   return (
     <div className="app">
 
@@ -343,13 +536,15 @@ export default function App() {
       <header className="header" id="top">
         <div className="container">
           <nav className="nav" aria-label="Primary">
-            <a className="brand" href="#top" aria-label="BidHub home">BidHub</a>
+            <a className="brand" href="#top" aria-label="BidHub home">
+              Bid<span className="brand-accent">Hub</span>
+            </a>
 
             <div className="nav-right">
               {navLinks.map((l) => (
                 <a className="nav-link" href={l.href} key={l.href}>{l.label}</a>
               ))}
-              <a className="btn btn-primary btn-sm" href="#pricing">Get Started</a>
+              <a className="btn btn-primary btn-sm" href="#pricing">Get BidHub</a>
             </div>
 
             <button
@@ -374,7 +569,7 @@ export default function App() {
                   <a className="mobile-menu-link" href={l.href} key={l.href} onClick={() => setMobileMenuOpen(false)}>{l.label}</a>
                 ))}
               </div>
-              <a className="btn btn-primary btn-block" href="#pricing" onClick={() => setMobileMenuOpen(false)}>Get Started</a>
+              <a className="btn btn-primary btn-block" href="#pricing" onClick={() => setMobileMenuOpen(false)}>Get BidHub</a>
             </div>
           </>
         )}
@@ -383,67 +578,83 @@ export default function App() {
       <main>
 
         {/* ── Hero ────────────────────────────────────── */}
-        <BackgroundGradient>
-          <section className="hero" id="home">
-            <div className="container">
-              <div className="hero-grid">
+        <section className="hero" id="home">
+          <HeroSwirl className="hero-swirl-purple" />
+          <Sparkle className="hero-star hero-star-left" />
+          <div className="container">
+            <div className="hero-grid">
 
-                {/* Left */}
-                <div className="hero-left">
-                  <div className="hero-eyebrow hero-animate">
-                    <span className="hero-eyebrow-dot" aria-hidden="true" />
-                    Reverse Marketplace for Malawi
+              {/* Left */}
+              <div className="hero-left">
+                <div className="hero-eyebrow hero-animate">
+                  <span className="hero-eyebrow-dot" aria-hidden="true" />
+                  Reverse marketplace for Malawi
+                </div>
+
+                <h1 className="hero-title hero-animate hero-animate-delay-1">
+                  Want something?<br />
+                  Make sellers{' '}
+                  <span className="hero-title-highlight">
+                    compete.
+                    <TitleSwirl />
+                  </span>
+                </h1>
+
+                <p className="hero-subtitle hero-animate hero-animate-delay-2">
+                  Post what you're looking for and sit back — trusted sellers send you
+                  competing offers with price, delivery, and availability. You pick the best one. 🎉
+                </p>
+
+                <div className="hero-actions hero-animate hero-animate-delay-3">
+                  <a className="btn btn-primary btn-lg" href="#pricing">
+                    Post a Request
+                    <span className="btn-icon" aria-hidden="true">→</span>
+                  </a>
+                  <a className="btn btn-outline btn-lg" href="#how-it-works">How it works</a>
+                </div>
+
+                <div className="hero-pills hero-animate hero-animate-delay-3" aria-label="Key benefits">
+                  <div className="hero-pill tone-yellow">
+                    <svg viewBox="0 0 20 20" aria-hidden="true"><path fill="currentColor" d="M16.707 5.293a1 1 0 0 1 0 1.414l-8 8a1 1 0 0 1-1.414 0l-4-4a1 1 0 0 1 1.414-1.414L8 12.586l7.293-7.293a1 1 0 0 1 1.414 0Z"/></svg>
+                    Free to post
                   </div>
-
-                  <h1 className="hero-title hero-animate hero-animate-delay-1">
-                    Request It.<br />
-                    <span className="hero-title-highlight">Compare Offers.</span>
-                  </h1>
-
-                  <p className="hero-subtitle hero-animate hero-animate-delay-2">
-                    Tell us what you're looking for and receive competitive offers from sellers.
-                    Compare price, delivery, and availability — then pick the best deal.
-                  </p>
-
-                  <div className="hero-actions hero-animate hero-animate-delay-3">
-                    <a className="btn btn-primary" href="#pricing">
-                      Post a Request
-                      <span className="btn-icon" aria-hidden="true">›</span>
-                    </a>
-                    <a className="btn btn-outline" href="#features">See How It Works</a>
+                  <div className="hero-pill tone-pink">
+                    <svg viewBox="0 0 20 20" aria-hidden="true"><path fill="currentColor" d="M11.3 1.046A1 1 0 0 1 12 2v5h4a1 1 0 0 1 .82 1.573l-7 10A1 1 0 0 1 8 18v-5H4a1 1 0 0 1-.82-1.573l7-10a1 1 0 0 1 1.12-.38Z"/></svg>
+                    Fast bids
                   </div>
-
-                  <div className="hero-pills hero-animate hero-animate-delay-3" aria-label="Key benefits">
-                    <div className="hero-pill">
-                      <svg viewBox="0 0 20 20" aria-hidden="true"><path fill="currentColor" d="M16.707 5.293a1 1 0 0 1 0 1.414l-8 8a1 1 0 0 1-1.414 0l-4-4a1 1 0 0 1 1.414-1.414L8 12.586l7.293-7.293a1 1 0 0 1 1.414 0Z"/></svg>
-                      Free to post
-                    </div>
-                    <div className="hero-pill">
-                      <svg viewBox="0 0 20 20" aria-hidden="true"><path fill="currentColor" d="M11.3 1.046A1 1 0 0 1 12 2v5h4a1 1 0 0 1 .82 1.573l-7 10A1 1 0 0 1 8 18v-5H4a1 1 0 0 1-.82-1.573l7-10a1 1 0 0 1 1.12-.38Z"/></svg>
-                      Fast bids
-                    </div>
-                    <div className="hero-pill">
-                      <svg viewBox="0 0 20 20" aria-hidden="true"><path fill="currentColor" d="M10 1l2.928 5.938L20 8.09l-5 4.872 1.18 6.878L10 16.7l-6.18 3.14L5 12.962 0 8.09l7.072-1.152L10 1Z"/></svg>
-                      Verified sellers
-                    </div>
+                  <div className="hero-pill tone-mint">
+                    <svg viewBox="0 0 20 20" aria-hidden="true"><path fill="currentColor" d="M10 1l2.928 5.938L20 8.09l-5 4.872 1.18 6.878L10 16.7l-6.18 3.14L5 12.962 0 8.09l7.072-1.152L10 1Z"/></svg>
+                    Verified sellers
                   </div>
                 </div>
 
-                {/* Right: animated mock */}
-                <div className="hero-right hero-animate hero-animate-delay-3" aria-hidden="true">
-                  <HeroMock />
+                <div className="hero-social-proof hero-animate hero-animate-delay-3">
+                  <div className="avatar-stack" aria-hidden="true">
+                    {heroFaces.map((src, i) => (
+                      <img key={i} src={src} alt="" loading="lazy" decoding="async" />
+                    ))}
+                  </div>
+                  <div className="hero-social-text">
+                    <span className="hero-social-stars" aria-hidden="true">★★★★★</span>
+                    Loved by <strong>50K+ buyers</strong> across Malawi
+                  </div>
                 </div>
               </div>
-            </div>
-          </section>
-        </BackgroundGradient>
 
-        {/* ── City trust bar ────────────────────────── */}
+              {/* Right: animated mock */}
+              <div className="hero-right hero-animate hero-animate-delay-3" aria-hidden="true">
+                <HeroMock />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── City ticker ───────────────────────────── */}
         <div className="city-bar" aria-label="Active cities">
           <div className="city-bar-inner">
             {[...cities, ...cities].map((c, i) => (
               <span key={i} className="city-item" aria-hidden={i >= cities.length ? 'true' : undefined}>
-                <span className="city-dot" />
+                <span className="city-star" aria-hidden="true">✦</span>
                 {c}
               </span>
             ))}
@@ -454,146 +665,201 @@ export default function App() {
         <section className="stats" aria-label="BidHub stats">
           <div className="container">
             <RevealStagger className="stats-grid">
-              <StatCard target={50}  suffix="K+" label="Active Buyers"    revealIndex={0} />
-              <StatCard target={100} suffix="K+" label="Requests Posted"  revealIndex={1} />
-              <StatCard target={5}   suffix="M+" label="Offers Made"      revealIndex={2} />
+              <StatCard target={50}  suffix="K+" label="Active Buyers"   tone="yellow" revealIndex={0} />
+              <StatCard target={100} suffix="K+" label="Requests Posted" tone="pink"   revealIndex={1} />
+              <StatCard target={5}   suffix="M+" label="Offers Made"     tone="mint"   revealIndex={2} />
             </RevealStagger>
           </div>
         </section>
 
-        <Geometry>
+        {/* ── Features (scroll-driven laptop demo) ──── */}
+        <section className="section section-scrolly" id="features">
+          <div className="container">
+            <Reveal className="section-header">
+              <div className="section-eyebrow">Why BidHub</div>
+              <h2>Shopping, but in reverse</h2>
+              <p>Scroll to see what happens after you post a request — straight from the BidHub app.</p>
+            </Reveal>
+          </div>
 
-          {/* ── Features ──────────────────────────────── */}
-          <section className="section" id="features">
-            <div className="container">
-              <Reveal className="section-header">
-                <div className="section-eyebrow">Why BidHub</div>
-                <h2>Why Choose BidHub?</h2>
-                <p>Everything you need to post what you want and receive competitive seller bids from a trusted community.</p>
-              </Reveal>
+          <LaptopScrolly scenes={laptopScenes} />
+        </section>
 
-              <RevealStagger className="cards-grid">
-                {features.map((f, i) => (
-                  <div className="card reveal-child" key={f.title} style={{ '--reveal-i': i }}>
-                    <div className="card-icon">{f.icon}</div>
-                    <h3 className="card-title">{f.title}</h3>
-                    <p className="card-text">{f.description}</p>
-                  </div>
-                ))}
-              </RevealStagger>
-            </div>
-          </section>
-
-          {/* ── Examples ──────────────────────────────── */}
-          <section className="section section-alt" id="examples" aria-label="Examples of what you can post">
-            <div className="container">
-              <Reveal className="section-header">
-                <div className="section-eyebrow">Categories</div>
-                <h2>What You Can Request on BidHub</h2>
-                <p>Post what you want to buy (or a service you need). Sellers respond with offers you can compare.</p>
-              </Reveal>
-
-              <RevealStagger className="examples-grid">
-                {acceptedExamples.map((e, i) => (
-                  <div className="example-card reveal-child" key={e.title} style={{ '--reveal-i': i }}>
-                    <div className="example-img-wrap">
-                      <img src={e.img} alt="" loading="lazy" decoding="async" />
-                    </div>
-                    <div className="example-body">
-                      <div className="example-icon">{e.icon}</div>
-                      <div>
-                        <h3 className="example-title">{e.title}</h3>
-                        <p className="example-text">{e.description}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </RevealStagger>
-            </div>
-          </section>
-
-          {/* ── Marketplaces ──────────────────────────── */}
-          <section className="section" id="marketplaces" aria-label="Marketplace aggregation">
-            <div className="container">
-              <Reveal className="section-header">
-                <div className="section-eyebrow">Integrations</div>
-                <h2>All Marketplaces, One Place</h2>
-                <p>We're building integrations to bring listings from WhatsApp and Facebook into a single experience — especially helpful when seller bids are not available.</p>
-              </Reveal>
-
-              <RevealStagger className="mkt-grid">
-                {marketplaceCards.map((c, i) => (
-                  <div className="mkt-card reveal-child" key={c.title} style={{ '--reveal-i': i }}>
-                    <div className="mkt-card-icon">{c.icon}</div>
-                    <h3 className="mkt-card-title">{c.title}</h3>
-                    <p className="mkt-card-text">{c.description}</p>
-                  </div>
-                ))}
-              </RevealStagger>
-
-              <Reveal className="section-note" delay={120}>
-                Integrations depend on what's permitted by each platform and the groups/pages you connect.
-              </Reveal>
-            </div>
-          </section>
-
-          {/* ── Popular Requests ──────────────────────── */}
-          <section className="section section-alt" id="popular-requests" aria-label="Popular requests">
-            <div className="container">
-              <Reveal className="section-header">
-                <div className="section-eyebrow">Trending</div>
-                <h2>Popular Requests</h2>
-                <p>Live-style examples of what people post — scroll through and copy the wording to start fast.</p>
-              </Reveal>
-            </div>
-
-            <Reveal className="marquee" delay={80} aria-label="Popular requests showcase">
-              <div className="marquee-track">
-                <div className="marquee-group" role="list" aria-label="Popular requests">
-                  {popularShowcase.map((s) => (
-                    <div className="showcase-card" role="listitem" key={s.title}>
-                      <div className="showcase-media" aria-hidden="true">
-                        <img src={s.img} alt="" loading="lazy" decoding="async" />
-                      </div>
-                      <div className="showcase-top">
-                        <div className="showcase-avatar" aria-hidden="true">{s.user}</div>
-                        <div className="showcase-ping" aria-hidden="true" />
-                      </div>
-                      <div className="showcase-title">{s.title}</div>
-                      <div className="showcase-meta">{s.meta}</div>
-                    </div>
-                  ))}
-                </div>
-                <div className="marquee-group" aria-hidden="true">
-                  {popularShowcase.map((s) => (
-                    <div className="showcase-card" key={`dup-${s.title}`}>
-                      <div className="showcase-media"><img src={s.img} alt="" loading="lazy" decoding="async" /></div>
-                      <div className="showcase-top">
-                        <div className="showcase-avatar">{s.user}</div>
-                        <div className="showcase-ping" />
-                      </div>
-                      <div className="showcase-title">{s.title}</div>
-                      <div className="showcase-meta">{s.meta}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+        {/* ── Examples ──────────────────────────────── */}
+        <section className="section section-alt" id="examples" aria-label="Examples of what you can post">
+          <div className="container">
+            <Reveal className="section-header">
+              <div className="section-eyebrow">Categories</div>
+              <h2>Ask for (almost) anything</h2>
+              <p>Post what you want to buy (or a service you need). Sellers respond with offers you can compare.</p>
             </Reveal>
 
-            <div className="container">
-              <Reveal className="section-note" delay={100}>
-                Tip: Don't overprice or underprice — you'll get better results when your budget is close to what the market is offering.
-              </Reveal>
-            </div>
-          </section>
+            <RevealStagger className="examples-grid">
+              {acceptedExamples.map((e, i) => (
+                <div className="example-card reveal-child" key={e.title} style={{ '--reveal-i': i }}>
+                  <div className={`example-img-wrap tone-${e.tone}`}>
+                    <img src={e.img} alt="" loading="lazy" decoding="async" />
+                  </div>
+                  <div className="example-body">
+                    <h3 className="example-title">{e.title}</h3>
+                    <p className="example-text">{e.description}</p>
+                  </div>
+                </div>
+              ))}
+            </RevealStagger>
+          </div>
+        </section>
 
-          {/* ── Market Insights ───────────────────────── */}
-          <section className="section" aria-label="Pricing and market insights">
-            <div className="container">
-              <Reveal className="section-header">
-                <div className="section-eyebrow">For Sellers</div>
-                <h2>Pricing &amp; Market Insights</h2>
-                <p>BidHub helps buyers get fair deals and helps sellers price correctly, reach people in need, and understand what the market wants.</p>
+        {/* ── How It Works ──────────────────────────── */}
+        <section className="section" id="how-it-works">
+          <div className="container">
+            <Reveal className="section-header">
+              <div className="section-eyebrow">Process</div>
+              <h2>Four steps. Zero haggling stress.</h2>
+              <p>Post a request, receive offers, and choose the best seller — all in 4 simple steps.</p>
+            </Reveal>
+
+            <RevealStagger className="steps-grid">
+              {howItWorks.map((s, i) => (
+                <div className="step-card reveal-child" key={s.step} style={{ '--reveal-i': i }}>
+                  <div className={`step-number tone-${s.tone}`}>{s.step}</div>
+                  <h3 className="step-title">{s.title}</h3>
+                  <p className="step-text">{s.description}</p>
+                  {i < howItWorks.length - 1 && (
+                    <svg className="step-arrow" viewBox="0 0 48 24" aria-hidden="true">
+                      <path d="M2 12h40m0 0-8-8m8 8-8 8" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  )}
+                </div>
+              ))}
+            </RevealStagger>
+          </div>
+        </section>
+
+        {/* ── Lifestyle: BidHub on the go ───────────── */}
+        <section className="lifestyle" aria-label="BidHub on the go">
+          <Sparkle className="lifestyle-star-1" />
+          <Sparkle className="lifestyle-star-2" />
+          <div className="container">
+            <div className="lifestyle-grid">
+
+              <Reveal className="lifestyle-media">
+                <div className="lifestyle-photo-wrap">
+                  <img
+                    className="lifestyle-photo"
+                    src="https://images.unsplash.com/photo-1605896163420-830698e44fb1?w=620&h=720&q=75&auto=format&fit=crop"
+                    alt="A man smiling while checking bids on his phone"
+                    loading="lazy"
+                    decoding="async"
+                  />
+
+                  <div className="lifestyle-card lifestyle-card-welcome" aria-hidden="true">
+                    <div className="lc-title">Welcome back, Thoko! 👋</div>
+                    <div className="lc-request">
+                      <span className="lc-request-label">Your request</span>
+                      <strong>iPhone 13 (used)</strong>
+                    </div>
+                    <div className="lc-bids">
+                      <span className="lc-bids-num">3</span>
+                      new bids waiting
+                    </div>
+                    <div className="lc-btn">View bids →</div>
+                  </div>
+
+                  <div className="lifestyle-card lifestyle-card-bid" aria-hidden="true">
+                    <span className="lc-bell">🔔</span>
+                    <div>
+                      <div className="lc-bid-title">New bid · MWK 570,000</div>
+                      <div className="lc-bid-meta">iMart Deals · Same-day delivery</div>
+                    </div>
+                  </div>
+                </div>
+              </Reveal>
+
+              <Reveal className="lifestyle-copy" delay={120}>
+                <div className="section-eyebrow on-dark">On the go</div>
+                <h2>Deals find you, wherever you are</h2>
+                <p className="lifestyle-text">
+                  Stuck in traffic in Lilongwe or stocking your shop in Mzuzu — post a request
+                  from your phone and let the offers chase <em>you</em> for a change.
+                </p>
+
+                <ul className="lifestyle-list">
+                  <li><span className="check" aria-hidden="true">✓</span> Post a request in under a minute</li>
+                  <li><span className="check" aria-hidden="true">✓</span> Get notified the second a bid lands</li>
+                  <li><span className="check" aria-hidden="true">✓</span> Chat, compare, and close — all in one place</li>
+                </ul>
+
+                <a className="btn btn-yellow btn-lg" href="#pricing">
+                  Post a Request
+                  <span className="btn-icon" aria-hidden="true">→</span>
+                </a>
+              </Reveal>
+
+            </div>
+          </div>
+        </section>
+
+        {/* ── Popular Requests ──────────────────────── */}
+        <section className="section section-alt" id="popular-requests" aria-label="Popular requests">
+          <div className="container">
+            <Reveal className="section-header">
+              <div className="section-eyebrow">Trending</div>
+              <h2>What people are asking for</h2>
+              <p>Live-style examples of what people post — scroll through and copy the wording to start fast.</p>
+            </Reveal>
+          </div>
+
+          <Reveal className="marquee" delay={80} aria-label="Popular requests showcase">
+            <div className="marquee-track">
+              <div className="marquee-group" role="list" aria-label="Popular requests">
+                {popularShowcase.map((s) => (
+                  <div className="showcase-card" role="listitem" key={s.title}>
+                    <div className="showcase-media" aria-hidden="true">
+                      <img src={s.img} alt="" loading="lazy" decoding="async" />
+                    </div>
+                    <div className="showcase-top">
+                      <img className="showcase-avatar" src={s.photo} alt={s.user} loading="lazy" decoding="async" />
+                      <div className="showcase-ping" aria-hidden="true" />
+                    </div>
+                    <div className="showcase-title">{s.title}</div>
+                    <div className="showcase-meta">{s.meta}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="marquee-group" aria-hidden="true">
+                {popularShowcase.map((s) => (
+                  <div className="showcase-card" key={`dup-${s.title}`}>
+                    <div className="showcase-media"><img src={s.img} alt="" loading="lazy" decoding="async" /></div>
+                    <div className="showcase-top">
+                      <img className="showcase-avatar" src={s.photo} alt="" loading="lazy" decoding="async" />
+                      <div className="showcase-ping" />
+                    </div>
+                    <div className="showcase-title">{s.title}</div>
+                    <div className="showcase-meta">{s.meta}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Reveal>
+
+          <div className="container">
+            <Reveal className="section-note" delay={100}>
+              Tip: Don't overprice or underprice — you'll get better results when your budget is close to what the market is offering.
+            </Reveal>
+          </div>
+        </section>
+
+        {/* ── For Sellers (navy panel) ──────────────── */}
+        <section className="section" aria-label="Pricing and market insights">
+          <div className="container">
+            <div className="sellers-panel">
+              <Sparkle className="sellers-star sellers-star-1" />
+              <Sparkle className="sellers-star sellers-star-2" />
+              <Reveal className="section-header sellers-header">
+                <div className="section-eyebrow on-dark">For Sellers</div>
+                <h2>Sellers, this one's for you 💼</h2>
+                <p>BidHub helps you price correctly, reach people in need, and understand exactly what the market wants.</p>
               </Reveal>
 
               <RevealStagger className="insights-grid">
@@ -606,100 +872,125 @@ export default function App() {
                 ))}
               </RevealStagger>
             </div>
-          </section>
+          </div>
+        </section>
 
-          {/* ── How It Works ──────────────────────────── */}
-          <section className="section section-alt" id="how-it-works">
-            <div className="container">
-              <Reveal className="section-header">
-                <div className="section-eyebrow">Process</div>
-                <h2>How It Works</h2>
-                <p>Post a request, receive offers, and choose the best seller — all in 4 simple steps.</p>
-              </Reveal>
+        {/* ── Testimonials ──────────────────────────── */}
+        <section className="section" id="testimonials" aria-label="What our users say">
+          <div className="container">
+            <Reveal className="section-header">
+              <div className="section-eyebrow">Testimonials</div>
+              <h2>Word on the street 💬</h2>
+              <p>Real buyers and sellers across Malawi on what changed when sellers started competing for them.</p>
+            </Reveal>
 
-              <RevealStagger className="timeline">
-                {howItWorks.map((s, i) => (
-                  <div className="timeline-step reveal-child" key={s.step} style={{ '--reveal-i': i }}>
-                    <div className="timeline-node">
-                      <div className="timeline-number">{s.step}</div>
-                      {i < howItWorks.length - 1 && <div className="timeline-connector" aria-hidden="true" />}
+            <RevealStagger className="testi-grid">
+              {testimonials.map((t, i) => (
+                <figure className={`testi-card tone-${t.tone} reveal-child`} key={t.name} style={{ '--reveal-i': i }}>
+                  <div className="testi-quote-mark" aria-hidden="true">“</div>
+                  <blockquote className="testi-quote">{t.quote}</blockquote>
+                  <figcaption className="testi-person">
+                    <img className="testi-photo" src={t.photo} alt={t.name} loading="lazy" decoding="async" />
+                    <div>
+                      <div className="testi-name">{t.name}</div>
+                      <div className="testi-role">{t.role}</div>
                     </div>
-                    <div className="timeline-body">
-                      <h3 className="timeline-title">{s.title}</h3>
-                      <p className="timeline-text">{s.description}</p>
+                    <span className="testi-stars" aria-label="5 stars">★★★★★</span>
+                  </figcaption>
+                </figure>
+              ))}
+            </RevealStagger>
+          </div>
+        </section>
+
+        {/* ── Pricing ───────────────────────────────── */}
+        <section className="section section-alt" id="pricing">
+          <div className="container">
+            <Reveal className="section-header">
+              <div className="section-eyebrow">Plans</div>
+              <h2>Simple, honest pricing</h2>
+              <p>Choose the plan that works best for you. No hidden fees, ever.</p>
+            </Reveal>
+
+            <RevealStagger className="pricing-grid">
+              {plans.map((p, i) => (
+                <div
+                  className={`price-card reveal-child${p.featured ? ' featured' : ''}`}
+                  key={p.name}
+                  style={{ '--reveal-i': i }}
+                >
+                  {p.featured && <div className="price-badge">Most Popular</div>}
+                  <div className="price-top">
+                    <h3 className="price-name">{p.name}</h3>
+                    <div className="price-value">
+                      {p.price}
+                      <span className="price-per">/mo</span>
                     </div>
+                    <p className="price-subtitle">{p.subtitle}</p>
                   </div>
-                ))}
-              </RevealStagger>
-            </div>
-          </section>
 
-          {/* ── Pricing ───────────────────────────────── */}
-          <section className="section" id="pricing">
-            <div className="container">
-              <Reveal className="section-header">
-                <div className="section-eyebrow">Plans</div>
-                <h2>Simple, Transparent Pricing</h2>
-                <p>Choose the plan that works best for you</p>
-              </Reveal>
+                  <ul className="price-list">
+                    {p.bullets.map((b) => (
+                      <li key={b}>
+                        <span className="check" aria-hidden="true">✓</span>
+                        <span>{b}</span>
+                      </li>
+                    ))}
+                  </ul>
 
-              <RevealStagger className="pricing-grid">
-                {plans.map((p, i) => (
-                  <div
-                    className={`price-card reveal-child${p.featured ? ' featured' : ''}`}
-                    key={p.name}
-                    style={{ '--reveal-i': i }}
-                  >
-                    {p.featured && <div className="price-badge">Most Popular</div>}
-                    <div className="price-top">
-                      <h3 className="price-name">{p.name}</h3>
-                      <div className="price-value">
-                        {p.price}
-                        <span className="price-per">/mo</span>
-                      </div>
-                      <p className="price-subtitle">{p.subtitle}</p>
-                    </div>
-
-                    <ul className="price-list">
-                      {p.bullets.map((b) => (
-                        <li key={b}>
-                          <span className="check" aria-hidden="true">✓</span>
-                          <span>{b}</span>
-                        </li>
-                      ))}
-                    </ul>
-
-                    <a className={`btn ${p.featured ? 'btn-primary' : 'btn-outline'} btn-block`} href="#cta">
-                      Get Started
-                    </a>
-                  </div>
-                ))}
-              </RevealStagger>
-            </div>
-          </section>
-
-          {/* ── CTA ───────────────────────────────────── */}
-          <section className="cta" id="cta">
-            <div className="cta-glow" aria-hidden="true" />
-            <div className="container">
-              <Reveal>
-                <div className="cta-inner">
-                  <div className="cta-eyebrow">Ready?</div>
-                  <h2>Ready to Get Better Deals?</h2>
-                  <p>Post what you want today and let sellers compete to give you the best price and delivery.</p>
-                  <div className="cta-actions">
-                    <a className="btn btn-primary" href="#top">
-                      Post Your First Request
-                      <span className="btn-icon" aria-hidden="true">›</span>
-                    </a>
-                    <a className="btn btn-outline" href="#features">Learn More</a>
-                  </div>
+                  <a className={`btn ${p.featured ? 'btn-accent' : 'btn-outline'} btn-block`} href="#cta">
+                    Get Started
+                  </a>
                 </div>
-              </Reveal>
-            </div>
-          </section>
+              ))}
+            </RevealStagger>
+          </div>
+        </section>
 
-        </Geometry>
+        {/* ── FAQ ───────────────────────────────────── */}
+        <section className="section" id="faq">
+          <div className="container container-narrow">
+            <Reveal className="section-header">
+              <div className="section-eyebrow">FAQ</div>
+              <h2>Questions? Answered.</h2>
+              <p>Everything you've wondered about how BidHub works.</p>
+            </Reveal>
+
+            <RevealStagger className="faq-list">
+              {faqs.map((f, i) => (
+                <details className="faq-item reveal-child" key={f.q} style={{ '--reveal-i': i }}>
+                  <summary className="faq-q">
+                    {f.q}
+                    <span className="faq-toggle" aria-hidden="true" />
+                  </summary>
+                  <p className="faq-a">{f.a}</p>
+                </details>
+              ))}
+            </RevealStagger>
+          </div>
+        </section>
+
+        {/* ── CTA ───────────────────────────────────── */}
+        <section className="cta-section" id="cta">
+          <div className="container">
+            <Reveal>
+              <div className="cta-inner">
+                <Sparkle className="cta-star cta-star-1" />
+                <Sparkle className="cta-star cta-star-2" />
+                <Sparkle className="cta-star cta-star-3" />
+                <h2>Ready to get a better deal?</h2>
+                <p>Post what you want today and let sellers compete to give you the best price and delivery.</p>
+                <div className="cta-actions">
+                  <a className="btn btn-dark btn-lg" href="#top">
+                    Post Your First Request
+                    <span className="btn-icon" aria-hidden="true">→</span>
+                  </a>
+                </div>
+              </div>
+            </Reveal>
+          </div>
+        </section>
+
       </main>
 
       {/* ── Footer ────────────────────────────────────── */}
@@ -720,7 +1011,7 @@ export default function App() {
               <div className="footer-title">Product</div>
               <a href="#features">Features</a>
               <a href="#pricing">Pricing</a>
-              <a href="#how-it-works">Security</a>
+              <a href="#faq">FAQ</a>
             </div>
 
             <div className="footer-col reveal-child" style={{ '--reveal-i': 2 }}>
@@ -739,7 +1030,7 @@ export default function App() {
           </RevealStagger>
 
           <Reveal className="footer-bottom">
-            <span>&copy; 2026 BidHub. All rights reserved.</span>
+            <span>&copy; 2026 BidHub. Made with 💛 in Malawi.</span>
           </Reveal>
         </div>
       </footer>
